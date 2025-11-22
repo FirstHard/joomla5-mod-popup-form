@@ -1,8 +1,6 @@
 .mod-popup-form {
   position: relative;
 }
-
-/* Оверлей */
 .mod-popup-form .mpf-overlay {
   position: fixed;
   inset: 0;
@@ -12,20 +10,16 @@
   transition: opacity 0.25s ease-out, visibility 0.25s ease-out;
   z-index: 1050;
 }
-
 .mod-popup-form.mpf-visible .mpf-overlay,
 .mod-popup-form .mpf-overlay.mpf-overlay-visible {
   opacity: 1;
   visibility: visible;
 }
-
-/* Попап */
 .mod-popup-form .mpf-popup {
   position: fixed;
   max-width: 500px;
   width: 100%;
   background: #fff;
-  /* border-radius: 0.5rem; */
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
   z-index: 1060;
   opacity: 0;
@@ -36,18 +30,12 @@
   pointer-events: none;
   transition: opacity 0.25s ease-out, transform 0.25s ease-out, left 0.25s ease-out, top 0.25s ease-out;
 }
-
-/* Когда попап активен (через класс на контейнере) — включаем клики */
 .mod-popup-form.mpf-visible .mpf-popup {
   pointer-events: auto;
 }
-
-/* Контент */
 .mod-popup-form .mpf-content {
   position: relative;
 }
-
-/* Кнопка закрытия */
 .mod-popup-form .mpf-close-btn {
   position: absolute;
   top: 0.25rem;
@@ -58,13 +46,9 @@
   line-height: 1;
   cursor: pointer;
 }
-
-/* Intro-текст */
 .mod-popup-form .mpf-intro {
   margin-bottom: 1rem;
 }
-
-/* Success message */
 .mod-popup-form .mpf-success {
   font-size: 1rem;
   line-height: 1.5;
@@ -74,7 +58,6 @@
     max-width: 100%;
 }
 .mod-popup-form--inline .mpf-popup {
-    /* на всякий пожарный, если вдруг где-то используется .mpf-popup */
     position: static;
     left: auto;
     top: auto;

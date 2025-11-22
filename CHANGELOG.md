@@ -10,7 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.3.0] - 2025-02-XX
+## [0.3.1] - 2025-11-22
+### Changed
+- Updated README.md to reflect new module capabilities (inline mode, multi-form support).
+- Minor improvements and refinements in documentation.
+
+### Fixed
+- Small fixes and cleanup related to the previous release.
+
+## [0.3.0] - 2025-11-21
 ### Added
 - **Static form display mode (inline mode)** — the form can now be embedded directly on the page.
 - Support for **multiple forms on a single page**, both popup and inline.
@@ -29,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.2.1] - 2025-02-XX
+## [0.2.1] - 2025-11-20
 ### Added
 - Dynamic form fields stored as JSON in module params.
 - Subforms for adding/removing/editing fields in admin UI.
@@ -43,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.1.0] - 2025-01-XX
+## [0.1.0] - 2025-11-19
 ### Added
 - Initial release with popup callback form.
 - AJAX submission via com_ajax.

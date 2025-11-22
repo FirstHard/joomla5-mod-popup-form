@@ -13,7 +13,6 @@
             initPopupModule(mod);
         });
 
-        // ГЛОБАЛЬНЫЙ обработчик отправки всех форм модуля
         document.addEventListener('submit', function (e) {
             const form = e.target.closest('.mpf-form');
             if (!form) {
@@ -25,24 +24,24 @@
                 return;
             }
 
-            e.preventDefault(); // Гарантированно блокируем стандартный submit
+            e.preventDefault();
 
             handleFormSubmit(mod, form);
         });
     });
 
     /**
-     * Инициализация конкретного экземпляра модуля:
-     * - режим отображения (popup / inline)
-     * - обработка кликов по ссылкам для popup
-     * - обработка закрытия popup
-     */
+    * Initialize a specific module instance:
+    * - display mode (popup / inline)
+    * - handle clicks on popup links
+    * - handle popup closing
+    */
     function initPopupModule(mod) {
-        const displayMode     = mod.dataset.displayMode || 'popup';
-        const anchorHash      = mod.dataset.anchorHash || 'callback';
-        const overlay         = mod.querySelector('.mpf-overlay');
-        const popup           = mod.querySelector('.mpf-popup');
-        const closeButtons    = mod.querySelectorAll('[data-mpf-close]');
+        const displayMode = mod.dataset.displayMode || 'popup';
+        const anchorHash = mod.dataset.anchorHash || 'callback';
+        const overlay = mod.querySelector('.mpf-overlay');
+        const popup = mod.querySelector('.mpf-popup');
+        const closeButtons = mod.querySelectorAll('[data-mpf-close]');
 
         let lastClickX = window.innerWidth / 2;
         let lastClickY = window.innerHeight / 2;
@@ -68,8 +67,6 @@
                 }
             });
         }
-
-        // Закрытие попапа (в статичном режиме элементов может не быть — это ок)
         closeButtons.forEach(function (btn) {
             btn.addEventListener('click', function () {
                 closePopup(mod, popup, overlay);
@@ -78,21 +75,20 @@
     }
 
     /**
-     * Общий обработчик submit для всех форм модуля.
-     * mod — корневой контейнер .mod-popup-form
-     * form — текущая форма .mpf-form
-     */
+    * Shared submit handler for all forms in the module.
+    * mod — root container .mod-popup-form
+    * form — current form .mpf-form
+    */
     function handleFormSubmit(mod, form) {
-        const ajaxUrl         = mod.dataset.ajaxUrl || '';
-        const submitLabel     = mod.dataset.submitLabel || 'Send';
+        const ajaxUrl = mod.dataset.ajaxUrl || '';
+        const submitLabel = mod.dataset.submitLabel || 'Send';
         const submittingLabel = mod.dataset.submittingLabel || 'Sending...';
-        const moduleId        = mod.dataset.moduleId;
+        const moduleId = mod.dataset.moduleId;
 
-        const alertBox   = mod.querySelector('.mpf-alert');
+        const alertBox = mod.querySelector('.mpf-alert');
         const successBox = mod.querySelector('.mpf-success');
-        const submitBtn  = form.querySelector('.mpf-submit-btn');
+        const submitBtn = form.querySelector('.mpf-submit-btn');
 
-        // Сбрасываем алерт и предыдущие ошибки
         if (alertBox) {
             alertBox.classList.add('d-none');
             alertBox.textContent = '';
@@ -102,22 +98,19 @@
         let hasError = false;
 
         inputs.forEach(function (input) {
-            const value         = (input.value || '').trim();
-            const isRequired    = input.hasAttribute('required');
-            const dataType      = input.dataset.type || input.type || 'text';
+            const value = (input.value || '').trim();
+            const isRequired = input.hasAttribute('required');
+            const dataType = input.dataset.type || input.type || 'text';
             const emailValidate = input.dataset.emailValidate === '1';
 
             let fieldHasError = false;
 
-            // Сброс класса ошибки
             input.classList.remove('is-invalid');
 
-            // Обязательность
             if (isRequired && !value) {
                 fieldHasError = true;
             }
 
-            // Email-валидация
             if (!fieldHasError && dataType === 'email' && emailValidate) {
                 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (value && !emailPattern.test(value)) {
@@ -132,11 +125,9 @@
         });
 
         if (hasError) {
-            // Валидация не пройдена — не отправляем
             return;
         }
 
-        // Если ajaxUrl не задан — не отправляем, но и не перезагружаем страницу
         if (!ajaxUrl) {
             if (alertBox) {
                 alertBox.textContent = 'Configuration error: AJAX URL is not defined for this form.';
@@ -146,7 +137,6 @@
             return;
         }
 
-        // AJAX-отправка
         const formData = new FormData(form);
         formData.append('module_id', moduleId);
 
@@ -166,15 +156,11 @@
                 return response.json();
             })
             .then(function (response) {
-                // response — объект вида { success, message, data }
-
-                // Сбрасываем старый алерт
                 if (alertBox) {
                     alertBox.classList.add('d-none');
                     alertBox.textContent = '';
                 }
 
-                // Если com_ajax вернул ошибку (исключение в PHP)
                 if (!response.success) {
                     const message = response.message || 'An error occurred while sending the form.';
 
@@ -188,7 +174,6 @@
 
                 const data = response.data || {};
 
-                // Ошибки валидации полей (сервер)
                 if (data.errors && form) {
                     const errors = data.errors;
 
@@ -213,7 +198,6 @@
                     return;
                 }
 
-                // Успех
                 if (data.success) {
                     if (form) {
                         form.classList.add('d-none');
@@ -243,33 +227,28 @@
             return;
         }
 
-        // Изначально позиционируем попап в точке клика
         const popupRect = popup.getBoundingClientRect();
 
         const startLeft = clickX - popupRect.width / 2;
-        const startTop  = clickY - popupRect.height / 2;
+        const startTop = clickY - popupRect.height / 2;
 
-        // Показываем контейнер
         mod.classList.add('mpf-visible');
 
-        // Стартовые значения
         popup.style.transition = 'none';
-        popup.style.opacity    = '0';
-        popup.style.left       = startLeft + 'px';
-        popup.style.top        = startTop + 'px';
-        popup.style.transform  = 'translate(0, 0)';
+        popup.style.opacity = '0';
+        popup.style.left = startLeft + 'px';
+        popup.style.top = startTop + 'px';
+        popup.style.transform = 'translate(0, 0)';
 
         overlay.classList.add('mpf-overlay-visible');
 
-        // Принудительный reflow, чтобы анимация сработала
         void popup.offsetWidth;
 
-        // Анимация к центру
         popup.style.transition = 'all 0.25s ease-out';
-        popup.style.left       = '50%';
-        popup.style.top        = '50%';
-        popup.style.transform  = 'translate(-50%, -50%)';
-        popup.style.opacity    = '1';
+        popup.style.left = '50%';
+        popup.style.top = '50%';
+        popup.style.transform = 'translate(-50%, -50%)';
+        popup.style.opacity = '1';
     }
 
     function closePopup(mod, popup, overlay) {
@@ -277,20 +256,18 @@
             return;
         }
 
-        // Анимация исчезновения
         popup.style.transition = 'all 0.2s ease-in';
-        popup.style.opacity    = '0';
-        popup.style.transform  = 'translate(-50%, -50%) scale(0.95)';
+        popup.style.opacity = '0';
+        popup.style.transform = 'translate(-50%, -50%) scale(0.95)';
 
-        // После анимации убираем классы и возвращаем в безопасное состояние
         setTimeout(function () {
             mod.classList.remove('mpf-visible');
             overlay.classList.remove('mpf-overlay-visible');
 
             popup.style.transition = '';
-            popup.style.left       = '50%';
-            popup.style.top        = '50%';
-            popup.style.transform  = 'translate(-50%, -50%)';
+            popup.style.left = '50%';
+            popup.style.top = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';
         }, 200);
     }
 })();

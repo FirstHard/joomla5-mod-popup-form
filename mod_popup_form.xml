@@ -34,26 +34,20 @@
     <config>
         <fields name="params">
             <fieldset name="basic" label="MOD_POPUP_FORM_FIELDSET_BASIC">
-
-                <!-- Display mode switcher -->
+            
                 <field name="display_mode" type="list" default="popup" label="MOD_POPUP_FORM_DISPLAY_MODE_LABEL" description="MOD_POPUP_FORM_DISPLAY_MODE_DESC">
                     <option value="popup">MOD_POPUP_FORM_DISPLAY_MODE_POPUP</option>
                     <option value="inline">MOD_POPUP_FORM_DISPLAY_MODE_INLINE</option>
                 </field>
-
-                <!-- Хеш без "#" -->
+                
                 <field name="anchor_hash" type="text" default="callback" label="MOD_POPUP_FORM_ANCHOR_HASH_LABEL" description="MOD_POPUP_FORM_ANCHOR_HASH_DESC" showon="display_mode:popup" />
-
-                <!-- Email получателя -->
+                
                 <field name="email_to" type="email" required="true" label="MOD_POPUP_FORM_EMAIL_TO_LABEL" description="MOD_POPUP_FORM_EMAIL_TO_DESC" />
-
-                <!-- Конструктор полей формы -->
+                
                 <field name="form_fields" type="subform" formsource="modules/mod_popup_form/forms/fields.xml" multiple="true" label="MOD_POPUP_FORM_FIELDS_LABEL" description="MOD_POPUP_FORM_FIELDS_DESC" />
 
-                <!-- Текст над формой -->
                 <field name="intro_text" type="textarea" label="MOD_POPUP_FORM_INTRO_TEXT_LABEL" description="MOD_POPUP_FORM_INTRO_TEXT_DESC" rows="4" />
 
-                <!-- Тексты кнопок и успешной отправки -->
                 <field name="submit_label" type="text" label="MOD_POPUP_FORM_SUBMIT_LABEL_LABEL" description="MOD_POPUP_FORM_SUBMIT_LABEL_DESC" />
 
                 <field name="submitting_label" type="text" label="MOD_POPUP_FORM_SUBMITTING_LABEL_LABEL" description="MOD_POPUP_FORM_SUBMITTING_LABEL_DESC" />

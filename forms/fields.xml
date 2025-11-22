@@ -2,8 +2,7 @@
 <form>
     <fields name="field">
         <fieldset name="basic">
-
-            <!-- Системное имя поля -->
+        
             <field
                 name="name"
                 type="text"
@@ -11,8 +10,7 @@
                 description="MOD_POPUP_FORM_FIELD_CFG_NAME_DESC"
                 required="true"
             />
-
-            <!-- Подпись поля -->
+            
             <field
                 name="label"
                 type="text"
@@ -20,8 +18,7 @@
                 description="MOD_POPUP_FORM_FIELD_CFG_LABEL_DESC"
                 required="true"
             />
-
-            <!-- Тип поля -->
+            
             <field
                 name="type"
                 type="list"
@@ -34,16 +31,14 @@
                 <option value="tel">MOD_POPUP_FORM_FIELD_TYPE_TEL</option>
                 <option value="textarea">MOD_POPUP_FORM_FIELD_TYPE_TEXTAREA</option>
             </field>
-
-            <!-- Placeholder -->
+            
             <field
                 name="placeholder"
                 type="text"
                 label="MOD_POPUP_FORM_FIELD_CFG_PLACEHOLDER_LABEL"
                 description="MOD_POPUP_FORM_FIELD_CFG_PLACEHOLDER_DESC"
             />
-
-            <!-- Обязательное поле -->
+            
             <field
                 name="required"
                 type="radio"
@@ -54,8 +49,7 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-
-            <!-- Показывать label -->
+            
             <field
                 name="show_label"
                 type="radio"
@@ -66,8 +60,7 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-
-            <!-- Позиция label -->
+            
             <field
                 name="label_position"
                 type="list"
@@ -78,8 +71,7 @@
                 <option value="top">MOD_POPUP_FORM_FIELD_LABEL_POSITION_TOP</option>
                 <option value="left">MOD_POPUP_FORM_FIELD_LABEL_POSITION_LEFT</option>
             </field>
-
-            <!-- Валидация email (для email-полей) -->
+            
             <field
                 name="email_validate"
                 type="radio"

@@ -11,12 +11,10 @@ $input = $app->getInput();
 
 $moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx', ''), ENT_QUOTES, 'UTF-8');
 
-// Хеш (без решётки)
 $anchorHash = $params->get('anchor_hash', 'callback');
 
 $ajaxModule = preg_replace('#^mod_#', '', $module->module);
 
-// URL для AJAX-отправки через com_ajax
 $ajaxUrl = Uri::root() . 'index.php?option=com_ajax'
     . '&module=' . $ajaxModule
     . '&method=submit'

@@ -10,7 +10,6 @@ $app = Factory::getApplication();
 $doc = $app->getDocument();
 $wa  = $doc->getWebAssetManager();
 
-// Регистрируем и подключаем JS/CSS модуля
 $wa->registerAndUseScript(
     'mod_popup_form',
     'modules/mod_popup_form/media/js/popupform.js',
@@ -32,11 +31,8 @@ $successText      = $params->get('success_text', Text::_('MOD_POPUP_FORM_SUCCESS
 
 $moduleId = (int) $module->id;
 
-// Конфиг полей из параметров
-// Конфиг полей из параметров
 $formFields = $params->get('form_fields', []);
 
-// Если вернулась JSON-строка — декодируем
 if (is_string($formFields)) {
     $decoded = json_decode($formFields, true);
     if (json_last_error() === JSON_ERROR_NONE) {
@@ -44,17 +40,14 @@ if (is_string($formFields)) {
     }
 }
 
-// Если это Registry — в массив
 if ($formFields instanceof \Joomla\Registry\Registry) {
     $formFields = $formFields->toArray();
 }
 
-// Если это объект (stdClass) — тоже в массив
 if (is_object($formFields)) {
     $formFields = (array) $formFields;
 }
 
-// Если в параметрах ничего не настроено — используем дефолтные поля
 if (empty($formFields) || !is_array($formFields)) {
     $formFields = [
         [
@@ -93,10 +86,8 @@ if (empty($formFields) || !is_array($formFields)) {
     data-module-id="<?php echo $moduleId; ?>">
 
     <?php if ($displayMode === 'popup') : ?>
-        <!-- Затемнение -->
         <div class="mpf-overlay" data-mpf-close></div>
-
-        <!-- Попап -->
+        
         <div class="mpf-popup">
             <button type="button" class="mpf-close-btn" aria-label="<?php echo Text::_('JCLOSE'); ?>" data-mpf-close>
                 &times;
@@ -113,8 +104,7 @@ if (empty($formFields) || !is_array($formFields)) {
 
                 <form class="mpf-form" novalidate>
                     <?php foreach ($formFields as $idx => $fieldCfg) :
-
-                        // Приводим к массиву верхний уровень
+                    
                         if ($fieldCfg instanceof \Joomla\Registry\Registry) {
                             $fieldCfg = $fieldCfg->toArray();
                         } elseif (is_object($fieldCfg)) {
@@ -122,8 +112,7 @@ if (empty($formFields) || !is_array($formFields)) {
                         } else {
                             $fieldCfg = (array) $fieldCfg;
                         }
-
-                        // Subform обычно заворачивает данные внутрь ключа "field"
+                        
                         if (isset($fieldCfg['field'])) {
                             $inner = $fieldCfg['field'];
 
@@ -137,8 +126,7 @@ if (empty($formFields) || !is_array($formFields)) {
                         }
 
                         $rawName = $fieldCfg['name'] ?? '';
-
-                        // Нормализуем имя поля: только латиница, цифры и _
+                        
                         $fieldName = preg_replace('#[^a-zA-Z0-9_]#', '_', $rawName);
                         if ($fieldName === '') {
                             $fieldName = 'field_' . ($idx + 1);
@@ -210,7 +198,6 @@ if (empty($formFields) || !is_array($formFields)) {
             </div>
         </div>
     <?php else : ?>
-        <!-- Статичный режим: только контент без оверлея и pop-up контейнера -->
         <div class="mpf-content">
 
             <div class="mpf-content">
@@ -224,8 +211,7 @@ if (empty($formFields) || !is_array($formFields)) {
 
                 <form class="mpf-form" novalidate>
                     <?php foreach ($formFields as $idx => $fieldCfg) :
-
-                        // Приводим к массиву верхний уровень
+                    
                         if ($fieldCfg instanceof \Joomla\Registry\Registry) {
                             $fieldCfg = $fieldCfg->toArray();
                         } elseif (is_object($fieldCfg)) {
@@ -233,8 +219,7 @@ if (empty($formFields) || !is_array($formFields)) {
                         } else {
                             $fieldCfg = (array) $fieldCfg;
                         }
-
-                        // Subform обычно заворачивает данные внутрь ключа "field"
+                        
                         if (isset($fieldCfg['field'])) {
                             $inner = $fieldCfg['field'];
 
@@ -248,8 +233,7 @@ if (empty($formFields) || !is_array($formFields)) {
                         }
 
                         $rawName = $fieldCfg['name'] ?? '';
-
-                        // Нормализуем имя поля: только латиница, цифры и _
+                        
                         $fieldName = preg_replace('#[^a-zA-Z0-9_]#', '_', $rawName);
                         if ($fieldName === '') {
                             $fieldName = 'field_' . ($idx + 1);

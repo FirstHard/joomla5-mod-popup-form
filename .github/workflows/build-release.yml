@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write    # даём права на работу с релизами и ассетами
+  contents: write
 
 jobs:
   build:
@@ -22,7 +22,6 @@ jobs:
         run: |
           echo "Tag name: $TAG_NAME"
 
-          # Убираем префикс "v" (если теги в формате v0.3.0)
           VERSION="${TAG_NAME#v}"
           echo "Version: $VERSION"
 
@@ -31,7 +30,6 @@ jobs:
           ZIP_NAME="mod_popup_form-${VERSION}.zip"
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
 
-          # Пакуем содержимое репозитория, исключая служебные каталоги
           zip -r "build/$ZIP_NAME" . \
             -x ".git/*" \
                ".github/*" \
