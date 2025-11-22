@@ -8,18 +8,39 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      MODULE_NAME: mod_popup_form
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Create ZIP archive
+      - name: Build ZIP for Joomla module
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
-          mkdir build
-          zip -r build/mod_popup_form.zip modules/mod_popup_form
+          echo "Tag name: $TAG_NAME"
+
+          # Убираем префикс "v" (если теги в формате v0.3.0)
+          VERSION="${TAG_NAME#v}"
+          echo "Version: $VERSION"
+
+          mkdir -p build
+
+          ZIP_NAME="${MODULE_NAME}-${VERSION}.zip"
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+
+          # Пакуем содержимое репозитория (текущей папки),
+          # исключая .git, .github, build и прочие служебные каталоги
+          zip -r "build/$ZIP_NAME" . \
+            -x ".git/*" \
+               ".github/*" \
+               "build/*" \
+               ".gitignore"
 
       - name: Upload ZIP to release assets
         uses: softprops/action-gh-release@v1
         with:
-          files: build/mod_popup_form.zip
+          files: build/${{ env.ZIP_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
