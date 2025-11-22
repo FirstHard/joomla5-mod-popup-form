@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" method="upgrade" client="site" version="5.0">
     <name>MOD_POPUP_FORM</name>
-    <version>0.3.0</version>
+    <version>0.3.1</version>
     <author>Volodymyr Buinov</author>
     <creationDate>2025-11-20</creationDate>
     <copyright>(c) Volodymyr Buinov</copyright>
