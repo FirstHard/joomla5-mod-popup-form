@@ -23,7 +23,8 @@ $wa->registerAndUseStyle(
     'modules/mod_popup_form/media/css/popupform.css'
 );
 
-$anchorHash       = $params->get('anchor_hash', 'callback'); // без "#"
+$displayMode      = $params->get('display_mode', 'popup');
+$anchorHash       = $params->get('anchor_hash', 'callback');
 $introText        = $params->get('intro_text', '');
 $submitLabel      = $params->get('submit_label', Text::_('MOD_POPUP_FORM_SUBMIT_DEFAULT'));
 $submittingLabel  = $params->get('submitting_label', Text::_('MOD_POPUP_FORM_SUBMITTING_DEFAULT'));
@@ -82,125 +83,242 @@ if (empty($formFields) || !is_array($formFields)) {
 
 <div
     id="mod-popup-form-<?php echo $moduleId; ?>"
-    class="mod-popup-form<?php echo $moduleclass_sfx; ?>"
+    class="mod-popup-form<?php echo $moduleclass_sfx; ?> mod-popup-form--<?php echo $displayMode; ?>"
+    data-display-mode="<?php echo htmlspecialchars($displayMode, ENT_QUOTES, 'UTF-8'); ?>"
     data-anchor-hash="<?php echo htmlspecialchars($anchorHash, ENT_QUOTES, 'UTF-8'); ?>"
     data-ajax-url="<?php echo htmlspecialchars($ajaxUrl, ENT_QUOTES, 'UTF-8'); ?>"
     data-submit-label="<?php echo htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8'); ?>"
     data-submitting-label="<?php echo htmlspecialchars($submittingLabel, ENT_QUOTES, 'UTF-8'); ?>"
     data-success-text="<?php echo htmlspecialchars($successText, ENT_QUOTES, 'UTF-8'); ?>"
     data-module-id="<?php echo $moduleId; ?>">
-    <!-- Затемнение -->
-    <div class="mpf-overlay" data-mpf-close></div>
 
-    <!-- Попап -->
-    <div class="mpf-popup">
-        <button type="button" class="mpf-close-btn" aria-label="<?php echo Text::_('JCLOSE'); ?>" data-mpf-close>
-            &times;
-        </button>
+    <?php if ($displayMode === 'popup') : ?>
+        <!-- Затемнение -->
+        <div class="mpf-overlay" data-mpf-close></div>
 
-        <div class="mpf-content">
-            <?php if (!empty($introText)) : ?>
-                <div class="mpf-intro">
-                    <?php echo $introText; ?>
-                </div>
-            <?php endif; ?>
+        <!-- Попап -->
+        <div class="mpf-popup">
+            <button type="button" class="mpf-close-btn" aria-label="<?php echo Text::_('JCLOSE'); ?>" data-mpf-close>
+                &times;
+            </button>
 
-            <div class="mpf-alert alert alert-danger d-none" role="alert"></div>
-
-            <form class="mpf-form" novalidate>
-                <?php foreach ($formFields as $idx => $fieldCfg) :
-
-                    // Приводим к массиву верхний уровень
-                    if ($fieldCfg instanceof \Joomla\Registry\Registry) {
-                        $fieldCfg = $fieldCfg->toArray();
-                    } elseif (is_object($fieldCfg)) {
-                        $fieldCfg = (array) $fieldCfg;
-                    } else {
-                        $fieldCfg = (array) $fieldCfg;
-                    }
-
-                    // Subform обычно заворачивает данные внутрь ключа "field"
-                    if (isset($fieldCfg['field'])) {
-                        $inner = $fieldCfg['field'];
-
-                        if ($inner instanceof \Joomla\Registry\Registry) {
-                            $fieldCfg = $inner->toArray();
-                        } elseif (is_object($inner)) {
-                            $fieldCfg = (array) $inner;
-                        } elseif (is_array($inner)) {
-                            $fieldCfg = $inner;
-                        }
-                    }
-
-                    $rawName = $fieldCfg['name'] ?? '';
-
-                    // Нормализуем имя поля: только латиница, цифры и _
-                    $fieldName = preg_replace('#[^a-zA-Z0-9_]#', '_', $rawName);
-                    if ($fieldName === '') {
-                        $fieldName = 'field_' . ($idx + 1);
-                    }
-
-                    $label          = $fieldCfg['label'] ?? $fieldName;
-                    $type           = $fieldCfg['type'] ?? 'text';
-                    $placeholder    = $fieldCfg['placeholder'] ?? '';
-                    $required       = (int)($fieldCfg['required'] ?? 0) === 1;
-                    $showLabel      = (int)($fieldCfg['show_label'] ?? 1) === 1;
-                    $labelPosition  = $fieldCfg['label_position'] ?? 'top';
-                    $emailValidate  = (int)($fieldCfg['email_validate'] ?? 0) === 1;
-
-                    $fieldId = 'mpf-' . $fieldName . '-' . $moduleId;
-
-                    $wrapperClasses = [
-                        'mb-3',
-                        'mpf-field',
-                        'mpf-field--' . $type,
-                        'mpf-label-' . $labelPosition,
-                    ];
-                ?>
-
-                    <div class="<?php echo implode(' ', $wrapperClasses); ?>">
-                        <?php if ($showLabel) : ?>
-                            <label for="<?php echo $fieldId; ?>" class="form-label">
-                                <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
-                            </label>
-                        <?php endif; ?>
-
-                        <?php if ($type === 'textarea') : ?>
-                            <textarea
-                                class="form-control rounded-0"
-                                id="<?php echo $fieldId; ?>"
-                                name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
-                                <?php echo $required ? 'required' : ''; ?>
-                                data-type="textarea"
-                                <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
-                                placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>"></textarea>
-                        <?php else : ?>
-                            <input
-                                type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
-                                class="form-control rounded-0"
-                                id="<?php echo $fieldId; ?>"
-                                name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
-                                <?php echo $required ? 'required' : ''; ?>
-                                data-type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
-                                <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
-                                placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>">
-                        <?php endif; ?>
-
-                        <div class="invalid-feedback">
-                            <?php echo Text::sprintf('MOD_POPUP_FORM_ERROR_FIELD_REQUIRED_GENERIC', $label); ?>
-                        </div>
+            <div class="mpf-content">
+                <?php if (!empty($introText)) : ?>
+                    <div class="mpf-intro">
+                        <?php echo $introText; ?>
                     </div>
+                <?php endif; ?>
 
-                <?php endforeach; ?>
+                <div class="mpf-alert alert alert-danger d-none" role="alert"></div>
 
-                <button type="submit" class="btn btn-primary mpf-submit-btn btn-modern text-center">
-                    <?php echo htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8'); ?>
-                </button>
-            </form>
+                <form class="mpf-form" novalidate>
+                    <?php foreach ($formFields as $idx => $fieldCfg) :
 
-            <div class="mpf-success d-none">
-                <?php echo nl2br(htmlspecialchars($successText, ENT_QUOTES, 'UTF-8')); ?>
+                        // Приводим к массиву верхний уровень
+                        if ($fieldCfg instanceof \Joomla\Registry\Registry) {
+                            $fieldCfg = $fieldCfg->toArray();
+                        } elseif (is_object($fieldCfg)) {
+                            $fieldCfg = (array) $fieldCfg;
+                        } else {
+                            $fieldCfg = (array) $fieldCfg;
+                        }
+
+                        // Subform обычно заворачивает данные внутрь ключа "field"
+                        if (isset($fieldCfg['field'])) {
+                            $inner = $fieldCfg['field'];
+
+                            if ($inner instanceof \Joomla\Registry\Registry) {
+                                $fieldCfg = $inner->toArray();
+                            } elseif (is_object($inner)) {
+                                $fieldCfg = (array) $inner;
+                            } elseif (is_array($inner)) {
+                                $fieldCfg = $inner;
+                            }
+                        }
+
+                        $rawName = $fieldCfg['name'] ?? '';
+
+                        // Нормализуем имя поля: только латиница, цифры и _
+                        $fieldName = preg_replace('#[^a-zA-Z0-9_]#', '_', $rawName);
+                        if ($fieldName === '') {
+                            $fieldName = 'field_' . ($idx + 1);
+                        }
+
+                        $label          = $fieldCfg['label'] ?? $fieldName;
+                        $type           = $fieldCfg['type'] ?? 'text';
+                        $placeholder    = $fieldCfg['placeholder'] ?? '';
+                        $required       = (int)($fieldCfg['required'] ?? 0) === 1;
+                        $showLabel      = (int)($fieldCfg['show_label'] ?? 1) === 1;
+                        $labelPosition  = $fieldCfg['label_position'] ?? 'top';
+                        $emailValidate  = (int)($fieldCfg['email_validate'] ?? 0) === 1;
+
+                        $fieldId = 'mpf-' . $fieldName . '-' . $moduleId;
+
+                        $wrapperClasses = [
+                            'mb-3',
+                            'mpf-field',
+                            'mpf-field--' . $type,
+                            'mpf-label-' . $labelPosition,
+                        ];
+                    ?>
+
+                        <div class="<?php echo implode(' ', $wrapperClasses); ?>">
+                            <?php if ($showLabel) : ?>
+                                <label for="<?php echo $fieldId; ?>" class="form-label">
+                                    <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                                </label>
+                            <?php endif; ?>
+
+                            <?php if ($type === 'textarea') : ?>
+                                <textarea
+                                    class="form-control rounded-0"
+                                    id="<?php echo $fieldId; ?>"
+                                    name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                    <?php echo $required ? 'required' : ''; ?>
+                                    data-type="textarea"
+                                    <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
+                                    placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>"></textarea>
+                            <?php else : ?>
+                                <input
+                                    type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
+                                    class="form-control rounded-0"
+                                    id="<?php echo $fieldId; ?>"
+                                    name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                    <?php echo $required ? 'required' : ''; ?>
+                                    data-type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
+                                    <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
+                                    placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php endif; ?>
+
+                            <div class="invalid-feedback">
+                                <?php echo Text::sprintf('MOD_POPUP_FORM_ERROR_FIELD_REQUIRED_GENERIC', $label); ?>
+                            </div>
+                        </div>
+
+                    <?php endforeach; ?>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary mpf-submit-btn btn-modern">
+                            <?php echo htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8'); ?>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mpf-success d-none">
+                    <?php echo nl2br(htmlspecialchars($successText, ENT_QUOTES, 'UTF-8')); ?>
+                </div>
             </div>
         </div>
-    </div>
+    <?php else : ?>
+        <!-- Статичный режим: только контент без оверлея и pop-up контейнера -->
+        <div class="mpf-content">
+
+            <div class="mpf-content">
+                <?php if (!empty($introText)) : ?>
+                    <div class="mpf-intro">
+                        <?php echo $introText; ?>
+                    </div>
+                <?php endif; ?>
+
+                <div class="mpf-alert alert alert-danger d-none" role="alert"></div>
+
+                <form class="mpf-form" novalidate>
+                    <?php foreach ($formFields as $idx => $fieldCfg) :
+
+                        // Приводим к массиву верхний уровень
+                        if ($fieldCfg instanceof \Joomla\Registry\Registry) {
+                            $fieldCfg = $fieldCfg->toArray();
+                        } elseif (is_object($fieldCfg)) {
+                            $fieldCfg = (array) $fieldCfg;
+                        } else {
+                            $fieldCfg = (array) $fieldCfg;
+                        }
+
+                        // Subform обычно заворачивает данные внутрь ключа "field"
+                        if (isset($fieldCfg['field'])) {
+                            $inner = $fieldCfg['field'];
+
+                            if ($inner instanceof \Joomla\Registry\Registry) {
+                                $fieldCfg = $inner->toArray();
+                            } elseif (is_object($inner)) {
+                                $fieldCfg = (array) $inner;
+                            } elseif (is_array($inner)) {
+                                $fieldCfg = $inner;
+                            }
+                        }
+
+                        $rawName = $fieldCfg['name'] ?? '';
+
+                        // Нормализуем имя поля: только латиница, цифры и _
+                        $fieldName = preg_replace('#[^a-zA-Z0-9_]#', '_', $rawName);
+                        if ($fieldName === '') {
+                            $fieldName = 'field_' . ($idx + 1);
+                        }
+
+                        $label          = $fieldCfg['label'] ?? $fieldName;
+                        $type           = $fieldCfg['type'] ?? 'text';
+                        $placeholder    = $fieldCfg['placeholder'] ?? '';
+                        $required       = (int)($fieldCfg['required'] ?? 0) === 1;
+                        $showLabel      = (int)($fieldCfg['show_label'] ?? 1) === 1;
+                        $labelPosition  = $fieldCfg['label_position'] ?? 'top';
+                        $emailValidate  = (int)($fieldCfg['email_validate'] ?? 0) === 1;
+
+                        $fieldId = 'mpf-' . $fieldName . '-' . $moduleId;
+
+                        $wrapperClasses = [
+                            'mb-3',
+                            'mpf-field',
+                            'mpf-field--' . $type,
+                            'mpf-label-' . $labelPosition,
+                        ];
+                    ?>
+
+                        <div class="<?php echo implode(' ', $wrapperClasses); ?>">
+                            <?php if ($showLabel) : ?>
+                                <label for="<?php echo $fieldId; ?>" class="form-label">
+                                    <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                                </label>
+                            <?php endif; ?>
+
+                            <?php if ($type === 'textarea') : ?>
+                                <textarea
+                                    class="form-control rounded-0"
+                                    id="<?php echo $fieldId; ?>"
+                                    name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                    <?php echo $required ? 'required' : ''; ?>
+                                    data-type="textarea"
+                                    <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
+                                    placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>"></textarea>
+                            <?php else : ?>
+                                <input
+                                    type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
+                                    class="form-control rounded-0"
+                                    id="<?php echo $fieldId; ?>"
+                                    name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                    <?php echo $required ? 'required' : ''; ?>
+                                    data-type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
+                                    <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
+                                    placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php endif; ?>
+
+                            <div class="invalid-feedback">
+                                <?php echo Text::sprintf('MOD_POPUP_FORM_ERROR_FIELD_REQUIRED_GENERIC', $label); ?>
+                            </div>
+                        </div>
+
+                    <?php endforeach; ?>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary mpf-submit-btn">
+                            <?php echo htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8'); ?>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mpf-success d-none">
+                    <?php echo nl2br(htmlspecialchars($successText, ENT_QUOTES, 'UTF-8')); ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>
