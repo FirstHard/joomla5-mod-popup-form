@@ -20,8 +20,7 @@ jobs:
           TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
           echo "Tag name: $TAG_NAME"
-
-          # Убираем префикс "v" (если теги в формате v0.3.0)
+          
           VERSION="${TAG_NAME#v}"
           echo "Version: $VERSION"
 
@@ -29,9 +28,7 @@ jobs:
 
           ZIP_NAME="${MODULE_NAME}-${VERSION}.zip"
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
-
-          # Пакуем содержимое репозитория (текущей папки),
-          # исключая .git, .github, build и прочие служебные каталоги
+          
           zip -r "build/$ZIP_NAME" . \
             -x ".git/*" \
                ".github/*" \
