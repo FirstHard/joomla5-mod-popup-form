@@ -69,3 +69,16 @@
   font-size: 1rem;
   line-height: 1.5;
 }
+.mod-popup-form--inline .mpf-content {
+    position: static;
+    max-width: 100%;
+}
+.mod-popup-form--inline .mpf-popup {
+    /* на всякий пожарный, если вдруг где-то используется .mpf-popup */
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    opacity: 1;
+    box-shadow: none;
+}
