@@ -1,0 +1,51 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [Unreleased]
+
+---
+
+## [0.3.0] - 2025-02-XX
+### Added
+- **Static form display mode (inline mode)** — the form can now be embedded directly on the page.
+- Support for **multiple forms on a single page**, both popup and inline.
+- Added automatic handling for form validation and AJAX submission for inline forms.
+- Improved JS architecture ensuring isolated behavior per instance of the module.
+
+### Changed
+- Refactored JavaScript event binding to avoid conflicts between multiple form instances.
+- Improved parsing of dynamic fields from module params.
+- Updated default template to support both modes with shared logic.
+
+### Fixed
+- Fixed issues where forms could not validate required fields.
+- Fixed AJAX submission for inline mode.
+- Prevented page reload for inline mode forms.
+
+---
+
+## [0.2.1] - 2025-02-XX
+### Added
+- Dynamic form fields stored as JSON in module params.
+- Subforms for adding/removing/editing fields in admin UI.
+- Field-level features: type, placeholder, required, label position, email validation.
+- Multilingual support (ru-RU, en-GB, kk-KZ).
+
+### Fixed
+- Corrected language constants for admin interface.
+- Fixed popup animation and overlay behavior.
+- Fixed AJAX error reporting via com_ajax.
+
+---
+
+## [0.1.0] - 2025-01-XX
+### Added
+- Initial release with popup callback form.
+- AJAX submission via com_ajax.
+- Bootstrap 5 styling and validation.
+- Customizable intro text and button labels.
