@@ -43,11 +43,30 @@ The module is ideal for landing pages, corporate websites, and projects that nee
   - optional email validation for email-type fields.
 - Flexible architecture that can be extended later (telephone format validation, input masks, custom validators, etc.).
 
+### 🔒 Optional Captcha Support
+
+The module supports Joomla’s built-in captcha plugins, including:
+
+- reCAPTCHA v2 (checkbox & invisible)
+- reCAPTCHA v3
+- Any other Joomla-compatible captcha plugin
+
+You can choose a captcha plugin **per module instance**.
+
+Features:
+
+- Captcha is validated server-side inside the module.
+- Captcha works for both **popup** and **inline** modes.
+- Fully AJAX-compatible — form does not reload page.
+- reCAPTCHA v3 badge is automatically relocated to the **bottom-left** corner to avoid UI overlap.
+
+If captcha validation fails, the form displays an appropriate error message above the form.
+
 ### 📬 AJAX Form Submission
 
 - No page reload required.
 - Client-side validation for required fields and optional email validation.
-- Server-side validation for all submitted fields.
+- Server-side validation for ALL submitted fields.
 - Error messages displayed using Bootstrap 5 styling.
 - Success message displayed after successful form submission.
 
@@ -56,32 +75,28 @@ The module is ideal for landing pages, corporate websites, and projects that nee
 Currently supported:
 
 - **Receiver email** (required).
-- Customizable **success message** after submission.
-- Customizable **button labels**:
-  - normal state;
-  - while sending.
-- Optional intro text displayed **above the form** in the popup/inline block.
+- Customizable **success message**.
+- Customizable submit button texts.
+- Optional intro text above the form.
 
-Planned for future versions (not implemented yet):
+Planned for future versions:
 
-- CC and BCC fields.
-- Custom email subject per module.
-- Custom email body intro (separate from the visible intro text).
-- Custom sender name and sender email.
+- CC/BCC.
+- Custom email subject.
+- Custom email intro line.
+- Custom sender name and email.
 
 ### 🌐 Multilingual Support
 
-Comes with language files for:
+Includes language files for:
 
 - `ru-RU`
 - `en-GB`
 - `kk-KZ`
 
-Additional languages can be added easily by providing the corresponding language files.
-
 ### 📁 JSON-Based Configuration Storage
 
-All module settings (including the form fields configuration) are stored in Joomla's database as structured JSON via the standard `params` field.
+All configuration (including form fields) is stored as structured JSON inside Joomla’s `params`.
 
 ---
 
@@ -90,57 +105,42 @@ All module settings (including the form fields configuration) are stored in Joom
 ### 1. Install via Joomla Administrator Panel
 
 1. Go to **Extensions → Install**.
-2. Upload the module ZIP package.
-3. After installation, go to **Extensions → Modules** and find **Popup Callback Form** (mod_popup_form).
-4. Publish the module and assign it to the desired menu items and template position.
+2. Upload the module ZIP.
+3. Publish the module via **Extensions → Modules**.
+4. Assign it to menu items or positions as needed.
 
-### 2. Use as a Popup Form
+### 2. Use as Popup
 
-Add a link which contains the configured hash (by default: `callback`):
+Add a link with the configured hash:
 
 ```html
 <a href="#callback">Request a Callback</a>
 ```
 
-When the link is clicked:
+### 3. Use as Static Form
 
-- the popup form appears with a smooth animation;
-- the background is dimmed;
-- the user can close the popup by clicking the close button or anywhere outside the popup.
-
-You can change the hash in the module settings.
-
-### 3. Use as a Static (Inline) Form
-
-In the module parameters, switch the display mode from **Popup** to **Inline / Static**.
-
-In this mode:
-
-- the form is rendered directly where the module is published;
-- there is no overlay or popup animation;
-- the form still sends data via AJAX and shows errors/success messages without page reload.
-
-You can publish both popup and inline instances of the module on the same page.
+Switch **Display Mode** to **Inline / Static** in module settings.
 
 ---
 
 ## 🔧 Requirements
 
-- Joomla **5.x**
-- Bootstrap **5.3.x**
-- PHP **8.1+**
-- Working mail setup (PHP mail or SMTP configured in Joomla)
+- Joomla 5.x  
+- PHP 8.1+  
+- Bootstrap 5.3.x  
+- Working email configuration  
+- *(Optional)* any Joomla-supported captcha plugin  
 
 ---
 
 ## 🤝 Feedback & Support
 
-If you enjoy this module or want to support further development, you can help via:
+If you enjoy this module or want to support further development:
 
 - Donatello: https://donatello.to/TekhnoKhobbIT  
 - Buy Me a Coffee: https://buymeacoffee.com/tekhnokhobbit  
 
-If you find a bug or want to propose an enhancement, feel free to create an Issue or Pull Request in the project repository.
+Report issues or contribute via GitHub.
 
 ---
 

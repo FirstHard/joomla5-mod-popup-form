@@ -10,6 +10,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2025-11-23
+
+### Added
+- Optional integration with Joomla captcha plugins (e.g. reCAPTCHA v2, Invisible reCAPTCHA, reCAPTCHA v3) on a per-module basis.
+- Server-side captcha validation inside the module’s AJAX handler.
+- Support for captcha in both popup and inline display modes.
+- Automatic relocation of the reCAPTCHA v3 badge to the bottom-left corner to avoid overlapping UI elements.
+
+### Changed
+- Unified field validation logic in the AJAX handler to work consistently with custom fields and captcha.
+- Improved error messages for validation failures, including captcha-related errors.
+
+### Fixed
+- Fixed an issue where forms with enabled captcha always failed validation with a generic error.
+- Fixed handling of the reCAPTCHA v3 token by explicitly passing the module-specific token value to the captcha plugin.
+
 ## [0.3.1] - 2025-11-22
 ### Changed
 - Updated README.md to reflect new module capabilities (inline mode, multi-form support).

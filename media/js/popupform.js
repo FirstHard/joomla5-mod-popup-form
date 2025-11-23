@@ -30,12 +30,6 @@
         });
     });
 
-    /**
-    * Initialize a specific module instance:
-    * - display mode (popup / inline)
-    * - handle clicks on popup links
-    * - handle popup closing
-    */
     function initPopupModule(mod) {
         const displayMode = mod.dataset.displayMode || 'popup';
         const anchorHash = mod.dataset.anchorHash || 'callback';
@@ -46,7 +40,6 @@
         let lastClickX = window.innerWidth / 2;
         let lastClickY = window.innerHeight / 2;
 
-        // POPUP-режим: отслеживаем клики по ссылкам с нужным хешем
         if (displayMode === 'popup') {
             document.addEventListener('click', function (e) {
                 const link = e.target.closest('a[href]');
@@ -67,6 +60,7 @@
                 }
             });
         }
+
         closeButtons.forEach(function (btn) {
             btn.addEventListener('click', function () {
                 closePopup(mod, popup, overlay);
@@ -74,11 +68,6 @@
         });
     }
 
-    /**
-    * Shared submit handler for all forms in the module.
-    * mod — root container .mod-popup-form
-    * form — current form .mpf-form
-    */
     function handleFormSubmit(mod, form) {
         const ajaxUrl = mod.dataset.ajaxUrl || '';
         const submitLabel = mod.dataset.submitLabel || 'Send';
@@ -178,6 +167,18 @@
                     const errors = data.errors;
 
                     Object.keys(errors).forEach(function (field) {
+                        if (field === 'captcha') {
+                            const captchaField = form.querySelector('.mpf-field--captcha');
+                            if (captchaField) {
+                                captchaField.classList.add('is-invalid');
+                                const feedback = captchaField.querySelector('.invalid-feedback');
+                                if (feedback) {
+                                    feedback.textContent = errors[field];
+                                }
+                            }
+                            return;
+                        }
+
                         const input = form.querySelector('[name="' + field + '"]');
                         if (input) {
                             input.classList.add('is-invalid');
@@ -191,7 +192,7 @@
                     if (alertBox) {
                         alertBox.textContent = (window.Joomla && Joomla.Text)
                             ? Joomla.Text._('MOD_POPUP_FORM_ERROR_VALIDATION')
-                            : 'Please check the form fields.';
+                            : 'Please check that the form is filled out correctly.';
                         alertBox.classList.remove('d-none');
                     }
 
@@ -270,4 +271,18 @@
             popup.style.transform = 'translate(-50%, -50%)';
         }, 200);
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const observer = new MutationObserver(function () {
+            const badge = document.querySelector('.grecaptcha-badge');
+            if (badge) {
+                badge.style.right = 'auto';
+                badge.style.left = '0';
+                badge.style.bottom = '0';
+                badge.style.zIndex = '999999';
+            }
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+    });
 })();

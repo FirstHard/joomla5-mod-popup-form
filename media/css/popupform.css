@@ -54,14 +54,23 @@
   line-height: 1.5;
 }
 .mod-popup-form--inline .mpf-content {
-    position: static;
-    max-width: 100%;
+  position: static;
+  max-width: 100%;
 }
 .mod-popup-form--inline .mpf-popup {
-    position: static;
-    left: auto;
-    top: auto;
-    transform: none;
-    opacity: 1;
-    box-shadow: none;
+  position: static;
+  left: auto;
+  top: auto;
+  transform: none;
+  opacity: 1;
+  box-shadow: none;
+}
+.grecaptcha-badge {
+  width: 70px !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  left: 4px !important;
+}
+.grecaptcha-badge:hover {
+  width: 256px !important;
 }
