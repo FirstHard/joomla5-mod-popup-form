@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" method="upgrade" client="site" version="5.0">
     <name>MOD_POPUP_FORM</name>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
     <author>Volodymyr Buinov</author>
     <creationDate>2025-11-20</creationDate>
     <copyright>(c) Volodymyr Buinov</copyright>
@@ -42,7 +42,14 @@
 
                 <field name="anchor_hash" type="text" default="callback" label="MOD_POPUP_FORM_ANCHOR_HASH_LABEL" description="MOD_POPUP_FORM_ANCHOR_HASH_DESC" showon="display_mode:popup" />
 
-                <field name="email_to" type="email" required="true" label="MOD_POPUP_FORM_EMAIL_TO_LABEL" description="MOD_POPUP_FORM_EMAIL_TO_DESC" />
+                <field name="recipient_mode" type="radio" default="email" label="MOD_POPUP_FORM_RECIPIENT_MODE_LABEL" description="MOD_POPUP_FORM_RECIPIENT_MODE_DESC" layout="joomla.form.field.radio.switcher" class="btn-group btn-group-yesno">
+                    <option value="email">MOD_POPUP_FORM_RECIPIENT_MODE_EMAIL</option>
+                    <option value="contact">MOD_POPUP_FORM_RECIPIENT_MODE_CONTACT</option>
+                </field>
+
+                <field name="email_to" type="email" label="MOD_POPUP_FORM_EMAIL_TO_LABEL" description="MOD_POPUP_FORM_EMAIL_TO_DESC" required="true" showon="recipient_mode:email" />
+
+                <field name="contact_id" type="modal_contact" addfieldprefix="Joomla\Component\Contact\Administrator\Field" label="MOD_POPUP_FORM_CONTACT_ID_LABEL" description="MOD_POPUP_FORM_CONTACT_ID_DESC" showon="recipient_mode:contact" />
 
                 <field name="form_fields" type="subform" formsource="modules/mod_popup_form/forms/fields.xml" multiple="true" label="MOD_POPUP_FORM_FIELDS_LABEL" description="MOD_POPUP_FORM_FIELDS_DESC" />
 
