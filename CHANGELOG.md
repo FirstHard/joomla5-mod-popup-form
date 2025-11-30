@@ -10,8 +10,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.4.0] - 2025-11-23
+## [0.5.0] - 2025-11-29
+### Added
+- New **Email recipient mode: Joomla Contact Email**
+  - Module can now dynamically send messages to email of selected Joomla contact
+  - Fully compatible with AJAX and multilingual environments
+- Admin UI option for selecting between:
+  - Manual email
+  - Email from contact
+- Automatic creation of hidden field storing contact ID
+- Support for dynamic contact ID replacement by page scripts
 
+### Improved
+- Better handling of multiple form modules on the same page
+- Correct hiding/displaying of receiver-related fields based on mode
+- More robust validation flow
+- Safer parameter access and type handling
+- Added error logging on contact email lookup failures (only when JDEBUG enabled)
+
+### Fixed
+- PHP warning: undefined variable `$module` when submitting AJAX form
+- Incorrect module loading on AJAX request
+- JSON output was broken due to warnings in response
+- Captcha handling logic updated to avoid missing/invalid token errors
+
+---
+
+## [0.4.0] - 2025-11-23
 ### Added
 - Optional integration with Joomla captcha plugins (e.g. reCAPTCHA v2, Invisible reCAPTCHA, reCAPTCHA v3) on a per-module basis.
 - Server-side captcha validation inside the module’s AJAX handler.
@@ -26,6 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed an issue where forms with enabled captcha always failed validation with a generic error.
 - Fixed handling of the reCAPTCHA v3 token by explicitly passing the module-specific token value to the captcha plugin.
 
+---
+
 ## [0.3.1] - 2025-11-22
 ### Changed
 - Updated README.md to reflect new module capabilities (inline mode, multi-form support).
@@ -33,6 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Small fixes and cleanup related to the previous release.
+
+---
 
 ## [0.3.0] - 2025-11-21
 ### Added
