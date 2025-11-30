@@ -88,12 +88,12 @@ This enables advanced usage — for example:
 - Perfect for **multi-office contacts pages** 
 - Customizable **success message**.
 - Customizable submit button texts.
-- Optional intro text above the form.
+- Optional intro text before the form, with configurable position (**above** or **left** of the form on desktop) and optional HTML output.
+- Per-module custom email subject.
 
 Planned for future versions:
 
 - CC/BCC.
-- Custom email subject.
 - Custom email intro line.
 - Custom sender name and email.
 
