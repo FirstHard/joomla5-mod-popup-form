@@ -2,83 +2,37 @@
 <form>
     <fields name="field">
         <fieldset name="basic">
-        
-            <field
-                name="name"
-                type="text"
-                label="MOD_POPUP_FORM_FIELD_CFG_NAME_LABEL"
-                description="MOD_POPUP_FORM_FIELD_CFG_NAME_DESC"
-                required="true"
-            />
-            
-            <field
-                name="label"
-                type="text"
-                label="MOD_POPUP_FORM_FIELD_CFG_LABEL_LABEL"
-                description="MOD_POPUP_FORM_FIELD_CFG_LABEL_DESC"
-                required="true"
-            />
-            
-            <field
-                name="type"
-                type="list"
-                label="MOD_POPUP_FORM_FIELD_CFG_TYPE_LABEL"
-                description="MOD_POPUP_FORM_FIELD_CFG_TYPE_DESC"
-                default="text"
-            >
+
+            <field name="name" type="text" label="MOD_POPUP_FORM_FIELD_CFG_NAME_LABEL" description="MOD_POPUP_FORM_FIELD_CFG_NAME_DESC" required="true" />
+
+            <field name="label" type="text" label="MOD_POPUP_FORM_FIELD_CFG_LABEL_LABEL" description="MOD_POPUP_FORM_FIELD_CFG_LABEL_DESC" required="true" />
+
+            <field name="type" type="list" label="MOD_POPUP_FORM_FIELD_CFG_TYPE_LABEL" description="MOD_POPUP_FORM_FIELD_CFG_TYPE_DESC" default="text">
                 <option value="text">MOD_POPUP_FORM_FIELD_TYPE_TEXT</option>
                 <option value="email">MOD_POPUP_FORM_FIELD_TYPE_EMAIL</option>
                 <option value="tel">MOD_POPUP_FORM_FIELD_TYPE_TEL</option>
                 <option value="textarea">MOD_POPUP_FORM_FIELD_TYPE_TEXTAREA</option>
+                <option value="file">MOD_POPUP_FORM_FIELD_TYPE_FILE</option>
             </field>
-            
-            <field
-                name="placeholder"
-                type="text"
-                label="MOD_POPUP_FORM_FIELD_CFG_PLACEHOLDER_LABEL"
-                description="MOD_POPUP_FORM_FIELD_CFG_PLACEHOLDER_DESC"
-            />
-            
-            <field
-                name="required"
-                type="radio"
-                label="MOD_POPUP_FORM_FIELD_CFG_REQUIRED_LABEL"
-                description="MOD_POPUP_FORM_FIELD_CFG_REQUIRED_DESC"
-                default="1"
-            >
+
+            <field name="placeholder" type="text" label="MOD_POPUP_FORM_FIELD_CFG_PLACEHOLDER_LABEL" description="MOD_POPUP_FORM_FIELD_CFG_PLACEHOLDER_DESC" />
+
+            <field name="required" type="radio" label="MOD_POPUP_FORM_FIELD_CFG_REQUIRED_LABEL" description="MOD_POPUP_FORM_FIELD_CFG_REQUIRED_DESC" default="1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            
-            <field
-                name="show_label"
-                type="radio"
-                label="MOD_POPUP_FORM_FIELD_CFG_SHOW_LABEL_LABEL"
-                description="MOD_POPUP_FORM_FIELD_CFG_SHOW_LABEL_DESC"
-                default="1"
-            >
+
+            <field name="show_label" type="radio" label="MOD_POPUP_FORM_FIELD_CFG_SHOW_LABEL_LABEL" description="MOD_POPUP_FORM_FIELD_CFG_SHOW_LABEL_DESC" default="1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            
-            <field
-                name="label_position"
-                type="list"
-                label="MOD_POPUP_FORM_FIELD_CFG_LABEL_POSITION_LABEL"
-                description="MOD_POPUP_FORM_FIELD_CFG_LABEL_POSITION_DESC"
-                default="top"
-            >
+
+            <field name="label_position" type="list" label="MOD_POPUP_FORM_FIELD_CFG_LABEL_POSITION_LABEL" description="MOD_POPUP_FORM_FIELD_CFG_LABEL_POSITION_DESC" default="top">
                 <option value="top">MOD_POPUP_FORM_FIELD_LABEL_POSITION_TOP</option>
                 <option value="left">MOD_POPUP_FORM_FIELD_LABEL_POSITION_LEFT</option>
             </field>
-            
-            <field
-                name="email_validate"
-                type="radio"
-                label="MOD_POPUP_FORM_FIELD_CFG_EMAIL_VALIDATE_LABEL"
-                description="MOD_POPUP_FORM_FIELD_CFG_EMAIL_VALIDATE_DESC"
-                default="0"
-            >
+
+            <field name="email_validate" type="radio" label="MOD_POPUP_FORM_FIELD_CFG_EMAIL_VALIDATE_LABEL" description="MOD_POPUP_FORM_FIELD_CFG_EMAIL_VALIDATE_DESC" default="0">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
