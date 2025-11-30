@@ -29,10 +29,24 @@ Text::script('MOD_POPUP_FORM_ERROR_CAPTCHA_INVALID');
 
 $displayMode      = $params->get('display_mode', 'popup');
 $anchorHash       = $params->get('anchor_hash', 'callback');
-$introText        = $params->get('intro_text', '');
+$introText        = (string) $params->get('intro_text', '');
+$introTextPosition = (string) $params->get('intro_text_position', 'top');
+$introTextAllowHtml = (int) $params->get('intro_text_allow_html', 1);
+
+if ($introTextPosition !== 'top' && $introTextPosition !== 'left') {
+    $introTextPosition = 'top';
+}
+
+if ($introTextAllowHtml) {
+    $introTextHtml = $introText;
+} else {
+    $introTextHtml = nl2br(htmlspecialchars($introText, ENT_QUOTES, 'UTF-8'));
+}
+
 $submitLabel      = $params->get('submit_label', Text::_('MOD_POPUP_FORM_SUBMIT_DEFAULT'));
 $submittingLabel  = $params->get('submitting_label', Text::_('MOD_POPUP_FORM_SUBMITTING_DEFAULT'));
 $successText      = $params->get('success_text', Text::_('MOD_POPUP_FORM_SUCCESS_DEFAULT'));
+
 $captchaPlugin    = (string) $params->get('captcha_plugin', '');
 
 $moduleId = (int) $module->id; // must be defined before using in captcha and IDs
@@ -117,10 +131,10 @@ if (empty($formFields) || !is_array($formFields)) {
                 &times;
             </button>
 
-            <div class="mpf-content">
-                <?php if (!empty($introText)) : ?>
+            <div class="mpf-content mpf-intro-position-<?php echo htmlspecialchars($introTextPosition, ENT_QUOTES, 'UTF-8'); ?>">
+                <?php if ($introText !== '') : ?>
                     <div class="mpf-intro">
-                        <?php echo $introText; ?>
+                        <?php echo $introTextHtml; ?>
                     </div>
                 <?php endif; ?>
 

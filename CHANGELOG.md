@@ -10,6 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.0] - 2025-11-30
+### Added
+- Custom email subject per module instance.
+- Intro text position options (**above** or **left** of the form on desktop).
+- Option to allow or escape HTML in the intro text.
+
+### Changed
+- Form fields configuration block moved to the bottom of module parameters for better UX.
+
+### Fixed
+- Updated and corrected language strings.
+- Minor UI and configuration consistency fixes.
+
+---
+
 ## [0.5.0] - 2025-11-29
 ### Added
 - New **Email recipient mode: Joomla Contact Email**

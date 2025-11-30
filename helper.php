@@ -220,8 +220,15 @@ class ModPopupFormHelper
 
         /** @var Mail $mailer */
         $mailer = Factory::getMailer();
+        
+        $customSubject = trim((string) $params->get('email_subject', ''));
 
-        $subject = Text::_('MOD_POPUP_FORM_EMAIL_SUBJECT_DEFAULT');
+        if ($customSubject !== '') {
+            $subject = $customSubject;
+        } else {
+            $subject = Text::_('MOD_POPUP_FORM_EMAIL_SUBJECT_DEFAULT');
+        }
+
         $body    = Text::_('MOD_POPUP_FORM_EMAIL_BODY_INTRO') . "\n\n";
 
         foreach ($values as $field) {
