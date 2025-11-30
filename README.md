@@ -75,6 +75,17 @@ If captcha validation fails, the form displays an appropriate error message abov
 Currently supported:
 
 - **Receiver email** (required).
+
+- a **contact selector** appears in module settings
+- the **contact ID** is stored in the form (via hidden input)
+- email is pulled from `com_contact` dynamically during submission
+- fallback to manual email if contact has no valid email
+
+This enables advanced usage — for example:
+
+- One form module can be reused on **multiple pages**  
+- JavaScript can dynamically assign different **contact IDs**  
+- Perfect for **multi-office contacts pages** 
 - Customizable **success message**.
 - Customizable submit button texts.
 - Optional intro text above the form.

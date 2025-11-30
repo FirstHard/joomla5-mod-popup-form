@@ -218,6 +218,8 @@ if (empty($formFields) || !is_array($formFields)) {
                         </div>
                     <?php endif; ?>
 
+                    <input type="hidden" name="contact_id" id="mpf-contact-id-<?php echo (int)$moduleId; ?>" value="">
+
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary mpf-submit-btn">
                             <?php echo htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8'); ?>
@@ -331,6 +333,8 @@ if (empty($formFields) || !is_array($formFields)) {
                         </div>
                     </div>
                 <?php endif; ?>
+
+                <input type="hidden" name="contact_id" id="mpf-contact-id-<?php echo (int)$moduleId; ?>" value="">
 
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary mpf-submit-btn">

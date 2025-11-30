@@ -1,11 +1,19 @@
 <?php
+
+/**
+ * @package     Joomla.Site
+ * @subpackage  mod_popup_form
+ */
+
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Mail\Mail;
-use Joomla\Registry\Registry;
 use Joomla\CMS\Captcha\Captcha;
+use Joomla\CMS\Log\Log;
+use Joomla\Registry\Registry;
+use Joomla\Database\ParameterType;
 
 class ModPopupFormHelper
 {
@@ -21,33 +29,83 @@ class ModPopupFormHelper
         $app   = Factory::getApplication();
         $input = $app->getInput();
 
-        $moduleId = (int) $input->get('module_id', 0);
+        $moduleId = (int) $input->getInt('module_id', 0);
 
-        if (!$moduleId) {
-            throw new \RuntimeException(Text::_('MOD_POPUP_FORM_ERROR_NO_MODULE_ID'), 400);
+        $module = null;
+        if ($moduleId > 0) {
+            try {
+                $db = Factory::getContainer()->get('DatabaseDriver');
+                $query = $db->getQuery(true)
+                    ->select('*')
+                    ->from($db->quoteName('#__modules'))
+                    ->where($db->quoteName('id') . ' = ' . (int) $moduleId);
+
+                $db->setQuery($query);
+                $module = $db->loadObject();
+            } catch (\Throwable $e) {
+                if (\defined('JDEBUG') && JDEBUG) {
+                    Log::add(
+                        'mod_popup_form: Error loading module by id ' . $moduleId . ' - ' . $e->getMessage(),
+                        Log::WARNING,
+                        'mod_popup_form'
+                    );
+                }
+            }
         }
-        
-        $db    = Factory::getContainer()->get('DatabaseDriver');
-        $query = $db->getQuery(true)
-            ->select($db->quoteName(['id', 'params']))
-            ->from($db->quoteName('#__modules'))
-            ->where($db->quoteName('id') . ' = ' . (int) $moduleId)
-            ->where($db->quoteName('module') . ' = ' . $db->quote('mod_popup_form'));
-
-        $db->setQuery($query);
-        $module = $db->loadObject();
 
         if (!$module) {
-            throw new \RuntimeException(Text::_('MOD_POPUP_FORM_ERROR_MODULE_NOT_FOUND'), 404);
+            $module           = new \stdClass();
+            $module->id       = $moduleId;
+            $module->params   = '{}';
         }
 
-        $params = new Registry($module->params);
-        
-        $emailTo = trim((string) $params->get('email_to', ''));
+        $paramsRaw = $module->params ?? '{}';
+        $params    = new Registry($paramsRaw);
+
+        $recipientMode = (string) $params->get('recipient_mode', 'email');
+        $emailTo       = null;
+
+        if ($recipientMode === 'contact') {
+            $requestContactId = $input->getInt('contact_id', 0);
+            $contactId = $requestContactId ?: (int) $params->get('contact_id', 0);
+
+            if ($contactId > 0) {
+                try {
+                    $db = Factory::getContainer()->get('DatabaseDriver');
+                    $query = $db->getQuery(true)
+                        ->select($db->quoteName('email_to'))
+                        ->from($db->quoteName('#__contact_details'))
+                        ->where($db->quoteName('id') . ' = ' . (int) $contactId)
+                        ->where($db->quoteName('published') . ' = 1');
+
+                    $db->setQuery($query);
+                    $emailFromContact = (string) $db->loadResult();
+
+                    if ($emailFromContact && filter_var($emailFromContact, FILTER_VALIDATE_EMAIL)) {
+                        $emailTo = $emailFromContact;
+                    }
+                } catch (\Throwable $e) {
+                    if (\defined('JDEBUG') && JDEBUG) {
+                        Log::add(
+                            'mod_popup_form: Error fetching contact email - ' . $e->getMessage(),
+                            Log::WARNING,
+                            'mod_popup_form'
+                        );
+                    }
+                }
+            }
+
+            if (!$emailTo) {
+                $emailTo = trim((string) $params->get('email_to', ''));
+            }
+        } else {
+            $emailTo = trim((string) $params->get('email_to', ''));
+        }
+
         if (!filter_var($emailTo, FILTER_VALIDATE_EMAIL)) {
             throw new \RuntimeException(Text::_('MOD_POPUP_FORM_ERROR_INVALID_EMAIL_TO'), 500);
         }
-        
+
         $formFields = $params->get('form_fields', []);
 
         if (is_string($formFields)) {
@@ -64,7 +122,7 @@ class ModPopupFormHelper
         if (is_object($formFields)) {
             $formFields = (array) $formFields;
         }
-        
+
         if (empty($formFields) || !is_array($formFields)) {
             $formFields = [
                 [
@@ -87,7 +145,7 @@ class ModPopupFormHelper
                 ],
             ];
         }
-        
+
         $errors = [];
         $values = [];
 
@@ -99,11 +157,11 @@ class ModPopupFormHelper
             }
 
             if (isset($fieldCfg['field'])) {
-                $inner = $fieldCfg['field'];
+                $inner    = $fieldCfg['field'];
                 $fieldCfg = $inner instanceof Registry ? $inner->toArray() : (array) $inner;
             }
 
-            $rawName = $fieldCfg['name'] ?? '';
+            $rawName   = $fieldCfg['name'] ?? '';
             $fieldName = preg_replace('#[^a-zA-Z0-9_]#', '_', $rawName) ?: ('field_' . ($idx + 1));
 
             $label         = $fieldCfg['label'] ?? $fieldName;
@@ -152,7 +210,7 @@ class ModPopupFormHelper
                 $errors['captcha'] = Text::_('MOD_POPUP_FORM_ERROR_CAPTCHA_FAILED');
             }
         }
-        
+
         if (!empty($errors)) {
             return [
                 'success' => false,
@@ -160,14 +218,11 @@ class ModPopupFormHelper
             ];
         }
 
-        /**
-         * Sending email
-         */
         /** @var Mail $mailer */
         $mailer = Factory::getMailer();
 
         $subject = Text::_('MOD_POPUP_FORM_EMAIL_SUBJECT_DEFAULT');
-        $body  = Text::_('MOD_POPUP_FORM_EMAIL_BODY_INTRO') . "\n\n";
+        $body    = Text::_('MOD_POPUP_FORM_EMAIL_BODY_INTRO') . "\n\n";
 
         foreach ($values as $field) {
             $body .= ($field['label'] ?? '') . ': ' . ($field['value'] ?? '') . "\n";

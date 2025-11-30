@@ -4,11 +4,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         const modules = document.querySelectorAll('.mod-popup-form');
 
-        if (!modules.length) {
-            console.log('Popup module(s) not initialized');
-            return;
-        }
-
         modules.forEach(function (mod) {
             initPopupModule(mod);
         });
@@ -25,7 +20,6 @@
             }
 
             e.preventDefault();
-
             handleFormSubmit(mod, form);
         });
     });
@@ -210,7 +204,7 @@
             })
             .catch(function (error) {
                 if (alertBox) {
-                    alertBox.textContent = 'Connection error. Please try again later.';
+                    alertBox.textContent = 'Connection error. Please try again later. Reason: ' + error;
                     alertBox.classList.remove('d-none');
                 }
                 console.error('mod_popup_form AJAX error:', error);
