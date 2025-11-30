@@ -90,6 +90,7 @@ This enables advanced usage — for example:
 - Customizable submit button texts.
 - Optional intro text before the form, with configurable position (**above** or **left** of the form on desktop) and optional HTML output.
 - Per-module custom email subject.
+- **File upload field** with server-side validation and email attachments.
 
 Planned for future versions:
 
@@ -131,6 +132,23 @@ Add a link with the configured hash:
 ### 3. Use as Static Form
 
 Switch **Display Mode** to **Inline / Static** in module settings.
+
+---
+
+### File upload field
+
+The module supports a `file` field type:
+
+- Uploaded files are attached to the email.
+- Allowed extensions are based on Joomla Media Manager (`com_media` upload and image extensions), plus a built-in whitelist:
+  - Office documents: **doc, docx, xls, xlsx, ppt, pptx**
+  - **pdf**
+  - Images: **jpg, jpeg, png, gif, webp, bmp** (excluding `svg`)
+  - Archives: **zip**
+- Two module parameters control limits:
+  - **Maximum total attachments size (MB)** – default: `20`
+  - **Maximum number of attachments** – default: `5`
+- `0` in either limit means “no limit”.
 
 ---
 

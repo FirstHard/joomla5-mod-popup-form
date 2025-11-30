@@ -10,6 +10,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.0] - 2025-11-30
+### Added
+- New `file` field type in the form builder.
+- Server-side file validation based on `com_media` settings combined with a built-in whitelist (Office documents, PDF, common image formats except SVG, ZIP archives).
+- Module parameters for limiting total attachments size (MB) and maximum number of attachments.
+
+### Changed
+- Recipient resolution logic:
+  - When "Recipient email" mode is used and the email field is empty, the module falls back to the site email (`mailfrom`).
+  - When "Contact email" mode is used, the module prefers the contact email and falls back to the module email or site email if necessary.
+- Attachments limit parameters are now numeric inputs in the module settings (instead of empty select fields).
+
+### Fixed
+- `.docx` and `.zip` files were incorrectly rejected as unsupported types in some configurations.
+- Minor configuration and UX tweaks in the module settings.
+
+---
+
 ## [0.6.0] - 2025-11-30
 ### Added
 - Custom email subject per module instance.
