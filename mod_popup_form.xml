@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" method="upgrade" client="site" version="5.0">
     <name>MOD_POPUP_FORM</name>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <author>Volodymyr Buinov</author>
     <creationDate>2025-11-20</creationDate>
     <copyright>(c) Volodymyr Buinov</copyright>
@@ -51,9 +51,19 @@
 
                 <field name="contact_id" type="modal_contact" addfieldprefix="Joomla\Component\Contact\Administrator\Field" label="MOD_POPUP_FORM_CONTACT_ID_LABEL" description="MOD_POPUP_FORM_CONTACT_ID_DESC" showon="recipient_mode:contact" />
 
-                <field name="form_fields" type="subform" formsource="modules/mod_popup_form/forms/fields.xml" multiple="true" label="MOD_POPUP_FORM_FIELDS_LABEL" description="MOD_POPUP_FORM_FIELDS_DESC" />
+                <field name="email_subject" type="text" label="MOD_POPUP_FORM_EMAIL_SUBJECT_LABEL" description="MOD_POPUP_FORM_EMAIL_SUBJECT_DESC" size="60" />
 
-                <field name="intro_text" type="textarea" label="MOD_POPUP_FORM_INTRO_TEXT_LABEL" description="MOD_POPUP_FORM_INTRO_TEXT_DESC" rows="4" />
+                <field name="intro_text" type="textarea" label="MOD_POPUP_FORM_INTRO_TEXT_LABEL" description="MOD_POPUP_FORM_INTRO_TEXT_DESC" rows="4" filter="raw" />
+
+                <field name="intro_text_position" type="list" label="MOD_POPUP_FORM_INTRO_TEXT_POSITION_LABEL" description="MOD_POPUP_FORM_INTRO_TEXT_POSITION_DESC" default="top">
+                    <option value="top">MOD_POPUP_FORM_INTRO_TEXT_POSITION_TOP</option>
+                    <option value="left">MOD_POPUP_FORM_INTRO_TEXT_POSITION_LEFT</option>
+                </field>
+
+                <field name="intro_text_allow_html" type="radio" label="MOD_POPUP_FORM_INTRO_TEXT_ALLOW_HTML_LABEL" description="MOD_POPUP_FORM_INTRO_TEXT_ALLOW_HTML_DESC" default="1" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
 
                 <field name="submit_label" type="text" label="MOD_POPUP_FORM_SUBMIT_LABEL_LABEL" description="MOD_POPUP_FORM_SUBMIT_LABEL_DESC" />
 
@@ -62,6 +72,8 @@
                 <field name="success_text" type="textarea" label="MOD_POPUP_FORM_SUCCESS_TEXT_LABEL" description="MOD_POPUP_FORM_SUCCESS_TEXT_DESC" rows="3" />
 
                 <field name="captcha_plugin" type="plugins" folder="captcha" label="MOD_POPUP_FORM_CAPTCHA_PLUGIN_LABEL" description="MOD_POPUP_FORM_CAPTCHA_PLUGIN_DESC" default="" />
+
+                <field name="form_fields" type="subform" formsource="modules/mod_popup_form/forms/fields.xml" multiple="true" label="MOD_POPUP_FORM_FIELDS_LABEL" description="MOD_POPUP_FORM_FIELDS_DESC" />
             </fieldset>
 
             <fieldset name="advanced" label="MOD_POPUP_FORM_FIELDSET_ADVANCED">
