@@ -204,6 +204,14 @@ if (empty($formFields) || !is_array($formFields)) {
                                     data-type="textarea"
                                     <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
                                     placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>"></textarea>
+                            <?php elseif ($type === 'file') : ?>
+                                <input
+                                    type="file"
+                                    class="form-control rounded-0"
+                                    id="<?php echo $fieldId; ?>"
+                                    name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                    <?php echo $required ? 'required' : ''; ?>
+                                    data-type="file">
                             <?php else : ?>
                                 <input
                                     type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
