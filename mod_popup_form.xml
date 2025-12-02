@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" method="upgrade" client="site" version="5.0">
     <name>MOD_POPUP_FORM</name>
-    <version>0.7.0</version>
+    <version>0.7.1</version>
     <author>Volodymyr Buinov</author>
-    <creationDate>2025-11-30</creationDate>
+    <creationDate>2025-12-02</creationDate>
     <copyright>(c) Volodymyr Buinov</copyright>
     <license>GPL-2.0-or-later</license>
     <description>MOD_POPUP_FORM_DESC</description>
@@ -68,6 +68,8 @@
                 <field name="submit_label" type="text" label="MOD_POPUP_FORM_SUBMIT_LABEL_LABEL" description="MOD_POPUP_FORM_SUBMIT_LABEL_DESC" />
 
                 <field name="submitting_label" type="text" label="MOD_POPUP_FORM_SUBMITTING_LABEL_LABEL" description="MOD_POPUP_FORM_SUBMITTING_LABEL_DESC" />
+
+                <field name="submit_btn_class" type="text" label="MOD_POPUP_FORM_SUBMIT_BTN_CLASS_LABEL" description="MOD_POPUP_FORM_SUBMIT_BTN_CLASS_DESC" default="" />
 
                 <field name="success_text" type="textarea" label="MOD_POPUP_FORM_SUCCESS_TEXT_LABEL" description="MOD_POPUP_FORM_SUCCESS_TEXT_DESC" rows="3" />
 

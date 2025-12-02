@@ -92,6 +92,17 @@ This enables advanced usage — for example:
 - Per-module custom email subject.
 - **File upload field** with server-side validation and email attachments.
 
+### Submit button CSS class
+
+You can optionally specify an additional CSS class for the submit button:
+
+- Parameter: **Submit button CSS class** (`submit_btn_class`)
+- Example values:
+  - `btn-lg`
+  - `btn-outline-secondary`
+  - `btn-lg btn-outline-secondary`
+- The module automatically concatenates this value with the base classes (`btn btn-primary mpf-submit-btn`) without extra spaces.
+
 Planned for future versions:
 
 - CC/BCC.
