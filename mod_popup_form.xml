@@ -68,6 +68,8 @@
                 <field name="submit_label" type="text" label="MOD_POPUP_FORM_SUBMIT_LABEL_LABEL" description="MOD_POPUP_FORM_SUBMIT_LABEL_DESC" />
 
                 <field name="submitting_label" type="text" label="MOD_POPUP_FORM_SUBMITTING_LABEL_LABEL" description="MOD_POPUP_FORM_SUBMITTING_LABEL_DESC" />
+                
+                <field name="submit_btn_class" type="text" label="MOD_POPUP_FORM_SUBMIT_BTN_CLASS_LABEL" description="MOD_POPUP_FORM_SUBMIT_BTN_CLASS_DESC" default="" />
 
                 <field name="success_text" type="textarea" label="MOD_POPUP_FORM_SUCCESS_TEXT_LABEL" description="MOD_POPUP_FORM_SUCCESS_TEXT_DESC" rows="3" />
 
