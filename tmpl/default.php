@@ -282,34 +282,10 @@ $renderFormLayout = function () use (
     <?php
     endif;
 };
-?>
 
-<div
-    id="mod-popup-form-<?php echo $moduleId; ?>"
-    class="mod-popup-form mod-popup-form--<?php echo $displayMode; ?>"
-    data-display-mode="<?php echo htmlspecialchars($displayMode, ENT_QUOTES, 'UTF-8'); ?>"
-    data-anchor-hash="<?php echo htmlspecialchars($anchorHash, ENT_QUOTES, 'UTF-8'); ?>"
-    data-ajax-url="<?php echo htmlspecialchars($ajaxUrl, ENT_QUOTES, 'UTF-8'); ?>"
-    data-submit-label="<?php echo htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8'); ?>"
-    data-submitting-label="<?php echo htmlspecialchars($submittingLabel, ENT_QUOTES, 'UTF-8'); ?>"
-    data-success-text="<?php echo htmlspecialchars($successText, ENT_QUOTES, 'UTF-8'); ?>"
-    data-module-id="<?php echo $moduleId; ?>">
-
-    <?php if ($displayMode === 'popup') : ?>
-        <div class="mpf-overlay" data-mpf-close></div>
-
-        <div class="mpf-popup">
-            <button type="button" class="mpf-close-btn" aria-label="<?php echo Text::_('JCLOSE'); ?>" data-mpf-close>
-                &times;
-            </button>
-
-            <div class="mpf-content">
-                <?php $renderFormLayout(); ?>
-            </div>
-        </div>
-    <?php else : ?>
-        <div class="mpf-content">
-            <?php $renderFormLayout(); ?>
-        </div>
-    <?php endif; ?>
-</div>
+// В зависимости от режима отображения подключаем нужный шаблон-обёртку
+if ($displayMode === 'popup') {
+    require __DIR__ . '/default_popup.php';
+} else {
+    require __DIR__ . '/default_static.php';
+}
