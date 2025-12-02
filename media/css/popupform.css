@@ -49,31 +49,6 @@
 .mod-popup-form .mpf-intro {
   margin-bottom: 1rem;
 }
-
-.mod-popup-form .mpf-content.mpf-intro-position-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.5rem;
-}
-
-.mod-popup-form .mpf-content.mpf-intro-position-left .mpf-intro {
-  flex: 0 0 40%;
-  margin-bottom: 0;
-}
-
-.mod-popup-form .mpf-content.mpf-intro-position-left .mpf-form {
-  flex: 1 1 auto;
-}
-
-@media (max-width: 767.98px) {
-  .mod-popup-form .mpf-content.mpf-intro-position-left {
-    display: block;
-  }
-
-  .mod-popup-form .mpf-content.mpf-intro-position-left .mpf-intro {
-    margin-bottom: 1rem;
-  }
-}
 .mod-popup-form .mpf-success {
   font-size: 1rem;
   line-height: 1.5;

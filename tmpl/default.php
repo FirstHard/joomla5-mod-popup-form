@@ -27,10 +27,10 @@ $wa->registerAndUseStyle(
 Text::script('MOD_POPUP_FORM_ERROR_VALIDATION');
 Text::script('MOD_POPUP_FORM_ERROR_CAPTCHA_INVALID');
 
-$displayMode      = $params->get('display_mode', 'popup');
-$anchorHash       = $params->get('anchor_hash', 'callback');
-$introText        = (string) $params->get('intro_text', '');
-$introTextPosition = (string) $params->get('intro_text_position', 'top');
+$displayMode        = $params->get('display_mode', 'popup');
+$anchorHash         = $params->get('anchor_hash', 'callback');
+$introText          = (string) $params->get('intro_text', '');
+$introTextPosition  = (string) $params->get('intro_text_position', 'top');
 $introTextAllowHtml = (int) $params->get('intro_text_allow_html', 1);
 
 if ($introTextPosition !== 'top' && $introTextPosition !== 'left') {
@@ -43,13 +43,13 @@ if ($introTextAllowHtml) {
     $introTextHtml = nl2br(htmlspecialchars($introText, ENT_QUOTES, 'UTF-8'));
 }
 
-$submitLabel      = $params->get('submit_label', Text::_('MOD_POPUP_FORM_SUBMIT_DEFAULT'));
-$submittingLabel  = $params->get('submitting_label', Text::_('MOD_POPUP_FORM_SUBMITTING_DEFAULT'));
-$successText      = $params->get('success_text', Text::_('MOD_POPUP_FORM_SUCCESS_DEFAULT'));
+$submitLabel     = $params->get('submit_label', Text::_('MOD_POPUP_FORM_SUBMIT_DEFAULT'));
+$submittingLabel = $params->get('submitting_label', Text::_('MOD_POPUP_FORM_SUBMITTING_DEFAULT'));
+$successText     = $params->get('success_text', Text::_('MOD_POPUP_FORM_SUCCESS_DEFAULT'));
 
-$captchaPlugin    = (string) $params->get('captcha_plugin', '');
+$captchaPlugin = (string) $params->get('captcha_plugin', '');
 
-$moduleId = (int) $module->id; // must be defined before using in captcha and IDs
+$moduleId = (int) $module->id;
 
 $captchaHtml = '';
 
@@ -131,9 +131,384 @@ if (empty($formFields) || !is_array($formFields)) {
                 &times;
             </button>
 
-            <div class="mpf-content mpf-intro-position-<?php echo htmlspecialchars($introTextPosition, ENT_QUOTES, 'UTF-8'); ?>">
+            <div class="mpf-content">
+                <?php if ($introText !== '' && $introTextPosition === 'left') : ?>
+                    <div class="row">
+                        <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                            <div class="mpf-intro">
+                                <?php echo $introTextHtml; ?>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="mpf-alert alert alert-danger d-none" role="alert"></div>
+
+                            <form class="mpf-form" novalidate>
+                                <?php foreach ($formFields as $idx => $fieldCfg) :
+
+                                    if ($fieldCfg instanceof Registry) {
+                                        $fieldCfg = $fieldCfg->toArray();
+                                    } elseif (is_object($fieldCfg)) {
+                                        $fieldCfg = (array) $fieldCfg;
+                                    } else {
+                                        $fieldCfg = (array) $fieldCfg;
+                                    }
+
+                                    if (isset($fieldCfg['field'])) {
+                                        $inner = $fieldCfg['field'];
+
+                                        if ($inner instanceof Registry) {
+                                            $fieldCfg = $inner->toArray();
+                                        } elseif (is_object($inner)) {
+                                            $fieldCfg = (array) $inner;
+                                        } elseif (is_array($inner)) {
+                                            $fieldCfg = $inner;
+                                        }
+                                    }
+
+                                    $rawName = $fieldCfg['name'] ?? '';
+
+                                    $fieldName = preg_replace('#[^a-zA-Z0-9_]#', '_', $rawName);
+                                    if ($fieldName === '') {
+                                        $fieldName = 'field_' . ($idx + 1);
+                                    }
+
+                                    $label          = $fieldCfg['label'] ?? $fieldName;
+                                    $type           = $fieldCfg['type'] ?? 'text';
+                                    $placeholder    = $fieldCfg['placeholder'] ?? '';
+                                    $required       = (int)($fieldCfg['required'] ?? 0) === 1;
+                                    $showLabel      = (int)($fieldCfg['show_label'] ?? 1) === 1;
+                                    $labelPosition  = $fieldCfg['label_position'] ?? 'top';
+                                    $emailValidate  = (int)($fieldCfg['email_validate'] ?? 0) === 1;
+
+                                    $fieldId = 'mpf-' . $fieldName . '-' . $moduleId;
+
+                                    $wrapperClasses = [
+                                        'mb-3',
+                                        'mpf-field',
+                                        'mpf-field--' . $type,
+                                        'mpf-label-' . $labelPosition,
+                                    ];
+                                    ?>
+
+                                    <div class="<?php echo implode(' ', $wrapperClasses); ?>">
+                                        <?php if ($showLabel) : ?>
+                                            <label for="<?php echo $fieldId; ?>" class="form-label">
+                                                <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                                            </label>
+                                        <?php endif; ?>
+
+                                        <?php if ($type === 'textarea') : ?>
+                                            <textarea
+                                                class="form-control rounded-0"
+                                                id="<?php echo $fieldId; ?>"
+                                                name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                                <?php echo $required ? 'required' : ''; ?>
+                                                data-type="textarea"
+                                                <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
+                                                placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>"></textarea>
+                                        <?php elseif ($type === 'file') : ?>
+                                            <input
+                                                type="file"
+                                                class="form-control rounded-0"
+                                                id="<?php echo $fieldId; ?>"
+                                                name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                                <?php echo $required ? 'required' : ''; ?>
+                                                data-type="file">
+                                        <?php else : ?>
+                                            <input
+                                                type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
+                                                class="form-control rounded-0"
+                                                id="<?php echo $fieldId; ?>"
+                                                name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                                <?php echo $required ? 'required' : ''; ?>
+                                                data-type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
+                                                <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
+                                                placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>">
+                                        <?php endif; ?>
+
+                                        <div class="invalid-feedback">
+                                            <?php echo Text::sprintf('MOD_POPUP_FORM_ERROR_FIELD_REQUIRED_GENERIC', $label); ?>
+                                        </div>
+                                    </div>
+
+                                <?php endforeach; ?>
+
+                                <?php if (!empty($captchaHtml)) : ?>
+                                    <div class="mb-3 mpf-field mpf-field--captcha">
+                                        <?php echo $captchaHtml; ?>
+                                        <div class="invalid-feedback">
+                                            <?php echo Text::_('MOD_POPUP_FORM_ERROR_CAPTCHA_INVALID'); ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <input type="hidden" name="contact_id" id="mpf-contact-id-<?php echo (int) $moduleId; ?>" value="">
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary mpf-submit-btn">
+                                        <?php echo htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8'); ?>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="mpf-success d-none">
+                                <?php echo nl2br(htmlspecialchars($successText, ENT_QUOTES, 'UTF-8')); ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php else : ?>
+                    <?php if ($introText !== '') : ?>
+                        <div class="mpf-intro mb-3">
+                            <?php echo $introTextHtml; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="mpf-alert alert alert-danger d-none" role="alert"></div>
+
+                    <form class="mpf-form" novalidate>
+                        <?php foreach ($formFields as $idx => $fieldCfg) :
+
+                            if ($fieldCfg instanceof Registry) {
+                                $fieldCfg = $fieldCfg->toArray();
+                            } elseif (is_object($fieldCfg)) {
+                                $fieldCfg = (array) $fieldCfg;
+                            } else {
+                                $fieldCfg = (array) $fieldCfg;
+                            }
+
+                            if (isset($fieldCfg['field'])) {
+                                $inner = $fieldCfg['field'];
+
+                                if ($inner instanceof Registry) {
+                                    $fieldCfg = $inner->toArray();
+                                } elseif (is_object($inner)) {
+                                    $fieldCfg = (array) $inner;
+                                } elseif (is_array($inner)) {
+                                    $fieldCfg = $inner;
+                                }
+                            }
+
+                            $rawName = $fieldCfg['name'] ?? '';
+
+                            $fieldName = preg_replace('#[^a-zA-Z0-9_]#', '_', $rawName);
+                            if ($fieldName === '') {
+                                $fieldName = 'field_' . ($idx + 1);
+                            }
+
+                            $label          = $fieldCfg['label'] ?? $fieldName;
+                            $type           = $fieldCfg['type'] ?? 'text';
+                            $placeholder    = $fieldCfg['placeholder'] ?? '';
+                            $required       = (int)($fieldCfg['required'] ?? 0) === 1;
+                            $showLabel      = (int)($fieldCfg['show_label'] ?? 1) === 1;
+                            $labelPosition  = $fieldCfg['label_position'] ?? 'top';
+                            $emailValidate  = (int)($fieldCfg['email_validate'] ?? 0) === 1;
+
+                            $fieldId = 'mpf-' . $fieldName . '-' . $moduleId;
+
+                            $wrapperClasses = [
+                                'mb-3',
+                                'mpf-field',
+                                'mpf-field--' . $type,
+                                'mpf-label-' . $labelPosition,
+                            ];
+                            ?>
+
+                            <div class="<?php echo implode(' ', $wrapperClasses); ?>">
+                                <?php if ($showLabel) : ?>
+                                    <label for="<?php echo $fieldId; ?>" class="form-label">
+                                        <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                                    </label>
+                                <?php endif; ?>
+
+                                <?php if ($type === 'textarea') : ?>
+                                    <textarea
+                                        class="form-control rounded-0"
+                                        id="<?php echo $fieldId; ?>"
+                                        name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                        <?php echo $required ? 'required' : ''; ?>
+                                        data-type="textarea"
+                                        <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
+                                        placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>"></textarea>
+                                <?php elseif ($type === 'file') : ?>
+                                    <input
+                                        type="file"
+                                        class="form-control rounded-0"
+                                        id="<?php echo $fieldId; ?>"
+                                        name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                        <?php echo $required ? 'required' : ''; ?>
+                                        data-type="file">
+                                <?php else : ?>
+                                    <input
+                                        type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
+                                        class="form-control rounded-0"
+                                        id="<?php echo $fieldId; ?>"
+                                        name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                        <?php echo $required ? 'required' : ''; ?>
+                                        data-type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
+                                        <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
+                                        placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>">
+                                <?php endif; ?>
+
+                                <div class="invalid-feedback">
+                                    <?php echo Text::sprintf('MOD_POPUP_FORM_ERROR_FIELD_REQUIRED_GENERIC', $label); ?>
+                                </div>
+                            </div>
+
+                        <?php endforeach; ?>
+
+                        <?php if (!empty($captchaHtml)) : ?>
+                            <div class="mb-3 mpf-field mpf-field--captcha">
+                                <?php echo $captchaHtml; ?>
+                                <div class="invalid-feedback">
+                                    <?php echo Text::_('MOD_POPUP_FORM_ERROR_CAPTCHA_INVALID'); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <input type="hidden" name="contact_id" id="mpf-contact-id-<?php echo (int) $moduleId; ?>" value="">
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary mpf-submit-btn">
+                                <?php echo htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8'); ?>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mpf-success d-none">
+                        <?php echo nl2br(htmlspecialchars($successText, ENT_QUOTES, 'UTF-8')); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php else : ?>
+        <div class="mpf-content">
+            <?php if ($introText !== '' && $introTextPosition === 'left') : ?>
+                <div class="row">
+                    <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                        <div class="mpf-intro">
+                            <?php echo $introTextHtml; ?>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="mpf-alert alert alert-danger d-none" role="alert"></div>
+
+                        <form class="mpf-form" novalidate>
+                            <?php foreach ($formFields as $idx => $fieldCfg) :
+
+                                if ($fieldCfg instanceof Registry) {
+                                    $fieldCfg = $fieldCfg->toArray();
+                                } elseif (is_object($fieldCfg)) {
+                                    $fieldCfg = (array) $fieldCfg;
+                                } else {
+                                    $fieldCfg = (array) $fieldCfg;
+                                }
+
+                                if (isset($fieldCfg['field'])) {
+                                    $inner = $fieldCfg['field'];
+
+                                    if ($inner instanceof Registry) {
+                                        $fieldCfg = $inner->toArray();
+                                    } elseif (is_object($inner)) {
+                                        $fieldCfg = (array) $inner;
+                                    } elseif (is_array($inner)) {
+                                        $fieldCfg = $inner;
+                                    }
+                                }
+
+                                $rawName = $fieldCfg['name'] ?? '';
+
+                                $fieldName = preg_replace('#[^a-zA-Z0-9_]#', '_', $rawName);
+                                if ($fieldName === '') {
+                                    $fieldName = 'field_' . ($idx + 1);
+                                }
+
+                                $label          = $fieldCfg['label'] ?? $fieldName;
+                                $type           = $fieldCfg['type'] ?? 'text';
+                                $placeholder    = $fieldCfg['placeholder'] ?? '';
+                                $required       = (int)($fieldCfg['required'] ?? 0) === 1;
+                                $showLabel      = (int)($fieldCfg['show_label'] ?? 1) === 1;
+                                $labelPosition  = $fieldCfg['label_position'] ?? 'top';
+                                $emailValidate  = (int)($fieldCfg['email_validate'] ?? 0) === 1;
+
+                                $fieldId = 'mpf-' . $fieldName . '-' . $moduleId;
+
+                                $wrapperClasses = [
+                                    'mb-3',
+                                    'mpf-field',
+                                    'mpf-field--' . $type,
+                                    'mpf-label-' . $labelPosition,
+                                ];
+                                ?>
+
+                                <div class="<?php echo implode(' ', $wrapperClasses); ?>">
+                                    <?php if ($showLabel) : ?>
+                                        <label for="<?php echo $fieldId; ?>" class="form-label">
+                                            <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                                        </label>
+                                    <?php endif; ?>
+
+                                    <?php if ($type === 'textarea') : ?>
+                                        <textarea
+                                            class="form-control rounded-0"
+                                            id="<?php echo $fieldId; ?>"
+                                            name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                            <?php echo $required ? 'required' : ''; ?>
+                                            data-type="textarea"
+                                            <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
+                                            placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>"></textarea>
+                                    <?php elseif ($type === 'file') : ?>
+                                        <input
+                                            type="file"
+                                            class="form-control rounded-0"
+                                            id="<?php echo $fieldId; ?>"
+                                            name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                            <?php echo $required ? 'required' : ''; ?>
+                                            data-type="file">
+                                    <?php else : ?>
+                                        <input
+                                            type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
+                                            class="form-control rounded-0"
+                                            id="<?php echo $fieldId; ?>"
+                                            name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
+                                            <?php echo $required ? 'required' : ''; ?>
+                                            data-type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
+                                            <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
+                                            placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>">
+                                    <?php endif; ?>
+
+                                    <div class="invalid-feedback">
+                                        <?php echo Text::sprintf('MOD_POPUP_FORM_ERROR_FIELD_REQUIRED_GENERIC', $label); ?>
+                                    </div>
+                                </div>
+
+                            <?php endforeach; ?>
+
+                            <?php if (!empty($captchaHtml)) : ?>
+                                <div class="mb-3 mpf-field mpf-field--captcha">
+                                    <?php echo $captchaHtml; ?>
+                                    <div class="invalid-feedback">
+                                        <?php echo Text::_('MOD_POPUP_FORM_ERROR_CAPTCHA_INVALID'); ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <input type="hidden" name="contact_id" id="mpf-contact-id-<?php echo (int) $moduleId; ?>" value="">
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary mpf-submit-btn">
+                                    <?php echo htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8'); ?>
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="mpf-success d-none">
+                            <?php echo nl2br(htmlspecialchars($successText, ENT_QUOTES, 'UTF-8')); ?>
+                        </div>
+                    </div>
+                </div>
+            <?php else : ?>
                 <?php if ($introText !== '') : ?>
-                    <div class="mpf-intro">
+                    <div class="mpf-intro mb-3">
                         <?php echo $introTextHtml; ?>
                     </div>
                 <?php endif; ?>
@@ -186,7 +561,7 @@ if (empty($formFields) || !is_array($formFields)) {
                             'mpf-field--' . $type,
                             'mpf-label-' . $labelPosition,
                         ];
-                    ?>
+                        ?>
 
                         <div class="<?php echo implode(' ', $wrapperClasses); ?>">
                             <?php if ($showLabel) : ?>
@@ -240,7 +615,7 @@ if (empty($formFields) || !is_array($formFields)) {
                         </div>
                     <?php endif; ?>
 
-                    <input type="hidden" name="contact_id" id="mpf-contact-id-<?php echo (int)$moduleId; ?>" value="">
+                    <input type="hidden" name="contact_id" id="mpf-contact-id-<?php echo (int) $moduleId; ?>" value="">
 
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary mpf-submit-btn">
@@ -252,122 +627,7 @@ if (empty($formFields) || !is_array($formFields)) {
                 <div class="mpf-success d-none">
                     <?php echo nl2br(htmlspecialchars($successText, ENT_QUOTES, 'UTF-8')); ?>
                 </div>
-            </div>
-        </div>
-    <?php else : ?>
-        <div class="mpf-content">
-            <?php if (!empty($introText)) : ?>
-                <div class="mpf-intro">
-                    <?php echo $introText; ?>
-                </div>
             <?php endif; ?>
-
-            <div class="mpf-alert alert alert-danger d-none" role="alert"></div>
-
-            <form class="mpf-form" novalidate>
-                <?php foreach ($formFields as $idx => $fieldCfg) :
-
-                    if ($fieldCfg instanceof Registry) {
-                        $fieldCfg = $fieldCfg->toArray();
-                    } elseif (is_object($fieldCfg)) {
-                        $fieldCfg = (array) $fieldCfg;
-                    } else {
-                        $fieldCfg = (array) $fieldCfg;
-                    }
-
-                    if (isset($fieldCfg['field'])) {
-                        $inner = $fieldCfg['field'];
-
-                        if ($inner instanceof Registry) {
-                            $fieldCfg = $inner->toArray();
-                        } elseif (is_object($inner)) {
-                            $fieldCfg = (array) $inner;
-                        } elseif (is_array($inner)) {
-                            $fieldCfg = $inner;
-                        }
-                    }
-
-                    $rawName = $fieldCfg['name'] ?? '';
-
-                    $fieldName = preg_replace('#[^a-zA-Z0-9_]#', '_', $rawName);
-                    if ($fieldName === '') {
-                        $fieldName = 'field_' . ($idx + 1);
-                    }
-
-                    $label          = $fieldCfg['label'] ?? $fieldName;
-                    $type           = $fieldCfg['type'] ?? 'text';
-                    $placeholder    = $fieldCfg['placeholder'] ?? '';
-                    $required       = (int)($fieldCfg['required'] ?? 0) === 1;
-                    $showLabel      = (int)($fieldCfg['show_label'] ?? 1) === 1;
-                    $labelPosition  = $fieldCfg['label_position'] ?? 'top';
-                    $emailValidate  = (int)($fieldCfg['email_validate'] ?? 0) === 1;
-
-                    $fieldId = 'mpf-' . $fieldName . '-' . $moduleId;
-
-                    $wrapperClasses = [
-                        'mb-3',
-                        'mpf-field',
-                        'mpf-field--' . $type,
-                        'mpf-label-' . $labelPosition,
-                    ];
-                ?>
-
-                    <div class="<?php echo implode(' ', $wrapperClasses); ?>">
-                        <?php if ($showLabel) : ?>
-                            <label for="<?php echo $fieldId; ?>" class="form-label">
-                                <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
-                            </label>
-                        <?php endif; ?>
-
-                        <?php if ($type === 'textarea') : ?>
-                            <textarea
-                                class="form-control rounded-0"
-                                id="<?php echo $fieldId; ?>"
-                                name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
-                                <?php echo $required ? 'required' : ''; ?>
-                                data-type="textarea"
-                                <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
-                                placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>"></textarea>
-                        <?php else : ?>
-                            <input
-                                type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
-                                class="form-control rounded-0"
-                                id="<?php echo $fieldId; ?>"
-                                name="<?php echo htmlspecialchars($fieldName, ENT_QUOTES, 'UTF-8'); ?>"
-                                <?php echo $required ? 'required' : ''; ?>
-                                data-type="<?php echo htmlspecialchars($type, ENT_QUOTES, 'UTF-8'); ?>"
-                                <?php echo $emailValidate ? 'data-email-validate="1"' : ''; ?>
-                                placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8'); ?>">
-                        <?php endif; ?>
-
-                        <div class="invalid-feedback">
-                            <?php echo Text::sprintf('MOD_POPUP_FORM_ERROR_FIELD_REQUIRED_GENERIC', $label); ?>
-                        </div>
-                    </div>
-
-                <?php endforeach; ?>
-
-                <?php if (!empty($captchaHtml)) : ?>
-                    <div class="mb-3 mpf-field mpf-field--captcha">
-                        <?php echo $captchaHtml; ?>
-                        <div class="invalid-feedback">
-                            <?php echo Text::_('MOD_POPUP_FORM_ERROR_CAPTCHA_INVALID'); ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-
-                <input type="hidden" name="contact_id" id="mpf-contact-id-<?php echo (int)$moduleId; ?>" value="">
-
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary mpf-submit-btn">
-                        <?php echo htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8'); ?>
-                    </button>
-                </div>
-            </form>
-
-            <div class="mpf-success d-none">
-                <?php echo nl2br(htmlspecialchars($successText, ENT_QUOTES, 'UTF-8')); ?>
-            </div>
         </div>
     <?php endif; ?>
 </div>
