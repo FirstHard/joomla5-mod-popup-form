@@ -113,8 +113,9 @@ Planned for future versions:
 
 Includes language files for:
 
-- `ru-RU`
+- `uk-UA`
 - `en-GB`
+- `ru-RU`
 - `kk-KZ`
 
 ### 📁 JSON-Based Configuration Storage
