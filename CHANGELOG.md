@@ -10,6 +10,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.1] - 2025-12-02
+### Added
+- New parameter `submit_btn_class` for the submit button, allowing to add a custom CSS class without having to manually manage extra spaces in the class attribute.
+
+### Changed
+- Refactored the module templates into separate layout files:
+  - `default.php` now prepares data and uses a shared renderer for the form layout.
+  - `default_popup.php` contains the popup wrapper (overlay, close button, popup container).
+  - `default_static.php` contains the static form wrapper.
+- Intro text layout now uses the Bootstrap grid:
+  - When the intro text position is set to **left**, the intro and the form are rendered as `col-12 col-lg-6` / `col-12 col-lg-6` inside a `.row`.
+
+### Fixed
+- Intro text position **left** did not work reliably; the text was always rendered above the form. Now the left layout works as expected on large screens and falls back to vertical stacking on smaller ones.
+- Reduced duplication of the submit button markup: there is now a single shared implementation, which also ensures clean class concatenation without extra spaces.
+- Fixed a fatal error `Class "Text" not found` in the popup template by using the fully-qualified `Joomla\CMS\Language\Text` class name.
+- Ensured that `moduleclass_sfx` is not appended to the internal `.mod-popup-form` container and can be safely used only at the module container level.
+
+---
+
 ## [0.7.0] - 2025-11-30
 ### Added
 - New `file` field type in the form builder.
