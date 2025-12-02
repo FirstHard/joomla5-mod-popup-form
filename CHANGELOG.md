@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.2] - 2025-12-02
+### Added
+- Ukrainian language support (`uk-UA`) for the module:
+  - Added `language/uk-UA/uk-UA.mod_popup_form.ini` with Ukrainian translations for all module strings.
+  - Added `language/uk-UA/uk-UA.mod_popup_form.sys.ini` with the module name and description in Ukrainian.
+
+### Changed
+- Minor language consistency improvements across frontend and backend strings.
+
+---
+
 ## [0.7.1] - 2025-12-02
 ### Added
 - New parameter `submit_btn_class` for the submit button, allowing to add a custom CSS class without having to manually manage extra spaces in the class attribute.
