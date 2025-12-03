@@ -76,6 +76,21 @@
             alertBox.classList.add('d-none');
             alertBox.textContent = '';
         }
+        if (successBox) {
+            successBox.classList.add('d-none');
+        }
+
+        form.querySelectorAll('.is-invalid').forEach(function (el) {
+            el.classList.remove('is-invalid');
+        });
+        const captchaFieldWrapper = form.querySelector('.mpf-field--captcha');
+        if (captchaFieldWrapper) {
+            captchaFieldWrapper.classList.remove('is-invalid');
+            const feedback = captchaFieldWrapper.querySelector('.invalid-feedback');
+            if (feedback) {
+                feedback.textContent = '';
+            }
+        }
 
         const inputs = form.querySelectorAll('input, textarea');
         let hasError = false;
@@ -183,6 +198,10 @@
                         }
                     });
 
+                    if (successBox) {
+                        successBox.classList.add('d-none');
+                    }
+
                     if (alertBox) {
                         alertBox.textContent = (window.Joomla && Joomla.Text)
                             ? Joomla.Text._('MOD_POPUP_FORM_ERROR_VALIDATION')
@@ -195,9 +214,23 @@
 
                 if (data.success) {
                     if (form) {
-                        form.classList.add('d-none');
+                        form.reset();
+                        form.querySelectorAll('.is-invalid').forEach(function (el) {
+                            el.classList.remove('is-invalid');
+                        });
                     }
+
+                    if (alertBox) {
+                        alertBox.classList.add('d-none');
+                        alertBox.textContent = '';
+                    }
+
                     if (successBox) {
+                        if (!successBox.classList.contains('alert')) {
+                            successBox.classList.add('alert', 'alert-success');
+                        } else if (!successBox.classList.contains('alert-success')) {
+                            successBox.classList.add('alert-success');
+                        }
                         successBox.classList.remove('d-none');
                     }
                 }
