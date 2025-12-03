@@ -111,9 +111,6 @@ if (empty($formFields) || !is_array($formFields)) {
     ];
 }
 
-/**
- * Общий рендер формы (для popup и статического варианта).
- */
 $renderFormLayout = function () use (
     $formFields,
     $moduleId,
@@ -125,14 +122,12 @@ $renderFormLayout = function () use (
     $successText,
     $submitBtnClass
 ) {
-    // базовые классы кнопки
     $submitButtonClasses = ['btn', 'btn-primary', 'mpf-submit-btn'];
     if ($submitBtnClass !== '') {
         $submitButtonClasses[] = $submitBtnClass;
     }
     $submitButtonClassAttr = implode(' ', $submitButtonClasses);
 
-    // Внутренний рендер: alert + form + success (один для всех раскладок)
     $renderFormInner = function () use (
         $formFields,
         $moduleId,
@@ -141,7 +136,7 @@ $renderFormLayout = function () use (
         $successText,
         $submitButtonClassAttr
     ) {
-        ?>
+?>
         <div class="mpf-alert alert alert-danger d-none" role="alert"></div>
 
         <form class="mpf-form" novalidate>
@@ -190,7 +185,7 @@ $renderFormLayout = function () use (
                     'mpf-field--' . $type,
                     'mpf-label-' . $labelPosition,
                 ];
-                ?>
+            ?>
 
                 <div class="<?php echo implode(' ', $wrapperClasses); ?>">
                     <?php if ($showLabel) : ?>
@@ -253,13 +248,12 @@ $renderFormLayout = function () use (
             </div>
         </form>
 
-        <div class="mpf-success d-none">
+        <div class="mpf-success alert alert-success d-none mb-0 mt-3" role="alert">
             <?php echo nl2br(htmlspecialchars($successText, ENT_QUOTES, 'UTF-8')); ?>
         </div>
-        <?php
+    <?php
     };
 
-    // Раскладка: интро слева или сверху
     if ($introText !== '' && $introTextPosition === 'left') : ?>
         <div class="row">
             <div class="col-12 col-lg-6 mb-3 mb-lg-0">
@@ -279,11 +273,10 @@ $renderFormLayout = function () use (
         <?php endif; ?>
 
         <?php $renderFormInner(); ?>
-    <?php
+<?php
     endif;
 };
 
-// В зависимости от режима отображения подключаем нужный шаблон-обёртку
 if ($displayMode === 'popup') {
     require __DIR__ . '/default_popup.php';
 } else {
